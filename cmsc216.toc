@@ -1,0 +1,3 @@
+\babel@toc {english}{}
+\contentsline {section}{\numberline {1}A Main Section}{2}{section.1}
+\contentsline {subsection}{A Subsection}{2}{section*.2}

@@ -1,0 +1,134 @@
+% Adapted from Alex Reustle's CMSC351 Course Notes
+
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <http://www.gnu.org/licenses/>.
+\documentclass[english, 10pt]{article}
+
+\usepackage{notes}
+\usepackage{inconsolata}
+\usepackage[shellescape]{gmp}
+\allowdisplaybreaks%
+\newcommand{\thiscoursecode}{CMSC 216}
+\newcommand{\thiscoursename}{Introduction to Computer Systems}
+\newcommand{\thisprof}{Dr.\ Ilchul Yoon}
+\newcommand{\me}{Akilesh Praveen}
+\newcommand{\thisterm}{Spring 2020}
+\newcommand{\website}{http://cs.umd.edu/class/spring2020/cmsc216/}%chktex 8
+\usepackage{ifpdf}
+\ifpdf%
+\DeclareGraphicsRule{*}{mps}{*}{}
+\fi
+% \listfiles
+
+\usepackage[utf8]{inputenc}
+ 
+\usepackage{listings}
+\usepackage{xcolor}
+ 
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.94}
+\definecolor{codered}{rgb}{0.5,0.15,0.15}
+\definecolor{commentred}{rgb}{1,0.01,0.02}
+ 
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{red},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codered},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,
+    xleftmargin=.15\textwidth,
+    xrightmargin=.15\textwidth,
+    linewidth=\textwidth,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2,
+    belowskip=3em,
+    aboveskip=3em,
+}
+
+\lstset{style=mystyle}
+
+
+% \VerbEnvir{align tikzpicture algorithm}
+%%%Headers
+\chead{216-Introduction to Computer Systems}
+\lhead{\thisterm}
+
+%%%%% TITLE %%%%%
+\graphicspath{{../}}
+\newcommand{\notefront}{%
+\pagenumbering{arabic}
+\begin{center}
+{\small}
+\textbf{\Huge{\noun{\thiscoursecode}}}
+{\Huge \par}
+{\Large{\noun{\thiscoursename}}}\\
+\vspace{0.1in}
+\vspace{0in}\includegraphics[scale=0.3]{umd_cs.jpg} \\
+\vspace{0.1in}{\noun\me} \\
+{\noun\thisprof} \ $\bullet$ \ {\noun\thisterm} \ $\bullet$ \ {\noun{University of Maryland}} \\
+{\ttfamily \url{\website}} \\
+\end{center}
+}
+
+ \tikzstyle{class}=[
+    rectangle,
+    draw=black,
+    text centered,
+    anchor=north,
+    text=black,
+    text width=2cm,
+    shading=axis,
+    bottom color={rgb:red,222;green,222;blue,222},
+    top color=white,shading angle=45]
+
+\begin{document}
+% \renewcommand\familydefault{\sfdefault}
+% \sffamily
+  % Notes front
+  \notefront%
+  % Table of Contents and List of Figures
+  \tocandfigures%
+  
+\section{A Main Section}
+
+Here are some cool notes that will no doubt be very helpful to students.
+\newline\newline
+Here is some cool code in Maryland colors!
+
+{\centering
+\begin{lstlisting}[language=C]
+int main() {
+	int x = 1;
+	int y = 2;
+	printf("hello world");
+	return x + y;
+}
+\end{lstlisting}
+}
+
+
+\subsection{A Subsection}
+A subheading's text
+  
+\end{document}
