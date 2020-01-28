@@ -1,3 +1,7 @@
 \babel@toc {english}{}
-\contentsline {section}{\numberline {1}A Main Section}{2}{section.1}
-\contentsline {subsection}{A Subsection}{2}{section*.2}
+\contentsline {section}{\numberline {1}Notes}{2}{section.1}
+\contentsline {section}{\numberline {2}Introduction to CMSC216}{2}{section.2}
+\contentsline {subsection}{Overview}{2}{section*.2}
+\contentsline {subsection}{Debugging}{2}{section*.3}
+\contentsline {section}{\numberline {3}A Main Section (Template)}{2}{section.3}
+\contentsline {subsection}{A Subsection}{2}{section*.4}
