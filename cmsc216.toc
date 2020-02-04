@@ -1,9 +1,10 @@
 \babel@toc {english}{}
-\contentsline {section}{\numberline {1}Notes}{2}{section.1}
-\contentsline {section}{\numberline {2}Introduction to CMSC216}{2}{section.2}
+\contentsline {section}{\numberline {1}Notes \& Preface}{2}{section.1}
+\contentsline {section}{\numberline {2}Week 1 - Introduction to CMSC216}{2}{section.2}
 \contentsline {subsection}{Overview}{2}{section*.2}
-\contentsline {subsection}{Debugging}{2}{section*.3}
-\contentsline {subsection}{Useful UNIX Commands}{2}{section*.4}
-\contentsline {section}{\numberline {3}Machine}{3}{section.3}
+\contentsline {subsection}{Grace}{2}{section*.3}
+\contentsline {subsection}{Useful UNIX Commands}{3}{section*.4}
+\contentsline {subsection}{Machine}{3}{section*.5}
+\contentsline {section}{\numberline {3}Week 2}{3}{section.3}
 \contentsline {section}{\numberline {4}A Main Section (Template)}{3}{section.4}
-\contentsline {subsection}{A Subsection}{3}{section*.5}
+\contentsline {subsection}{A Subsection}{4}{section*.6}

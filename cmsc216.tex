@@ -110,18 +110,21 @@
   % Table of Contents and List of Figures
   \tocandfigures%
   
-\section{Notes}
+\section{Notes \& Preface}
 
-This is a compilation of my notes for CMSC216 as a TA for the Spring 2020 offering of the course at the University of Maryland. All content covered in these notes was created by Dr. Ilchul Yoon and Dr. A.U. Shankar at the University of Maryland, and these are simply my transcriptions of the content provided in lecture and lab, along with my additional insight from the course compiled in a \LaTeX document.
+This is a compilation of my notes for CMSC216 as a TA for the Spring 2020 offering of the course at the University of Maryland. All content covered in these notes was created by Dr. Ilchul Yoon and Dr. A.U. Shankar at the University of Maryland.
+\newline
+
+The actual content of this note repository is the content that I cover as a TA during my discussion section, combined with my personal insights for the course. I believe that together, these will serve as great \textbf{supplementary material} for CMSC216, but I would still highly recommend attending all of your lecture and discussion sections to achieve success in CMSC216.
 \newline
 
 The notes template in use is Alex Reustle's template, which can be found on his github at the following location: \texttt{https://github.com/Areustle/CMSC351SP2016FLN}
 \linebreak
 
-Please send errors to \texttt{apraveen@cs.umd.edu}
+I maintain this repository and as such, take responsibility for any mistakes. Please send errors to \texttt{apraveen@cs.umd.edu}
   
   
-\section{Introduction to CMSC216}
+\section{Week 1 - Introduction to CMSC216}
 
 CMSC216 is where you learn how a computer works on a much lower level than you've experienced before. There are 3 main components that the course will explore.
 
@@ -133,14 +136,20 @@ CMSC216 is where you learn how a computer works on a much lower level than you'v
 	\item \textbf{Assembly} is even lower-level than C, and studying it will reveal how processors process instructions, store data, and maintain a stack and a heap. It's the lowest level you'll go in this class. For this semester's 216, you will be using MIPS assembly.
 \end{itemize}
 
-\subsection{Debugging}
+\subsection{Grace}
 
-Debugging is accomplished using two main tools: \textbf{Valgrind} for memory related issues, and \textbf{gdb} for general debugging. Both of these tools are very powerful if used correctly, and are explained as the semester progresses.
+In this class, we will be using the \texttt{Grace} system to do all of our work. It's a little confusing to understand at first, so here's my way of thinking about it. In CMSC132, we did all of our work on our own computers. We pulled the skeleton code for the projects from the 132 website/repository, edited the code on our computers, and then uploaded our code to the submit server (via Eclipse) in order to test it.\newline
 
-For more information, check out this link provided in the course slides:
-\newline
-\newline
-\texttt{\href{http://www.cs.usfca.edu/~parrt/doc/debugging.html}{The Essentials of Debugging}}
+In CMSC216, we have been given access to this big computer that UMD CS owns known as \texttt{Grace}. You, as a student, have been given a small chunk of that machine to call your own (for the semester). In this class, we will access your files on the \texttt{Grace} system using a program known as \texttt{ssh} (that's how MobaXTerm works) and do all of our editing + running code on \texttt{Grace} itself. In fact, we will also be submitting our projects from \texttt{Grace} to the UMD CS submit server.\newline
+
+Here are the relevant links for getting it all set up. You'll need to setup  \texttt{Grace} and \texttt{gcc} (the C compiler that we'll be using within \texttt{Grace}).\newline\newline
+\begin{itemize}
+	\item \texttt{\href{http://www.cs.umd.edu/~nelson/classes/resources/GraceSystem.shtml}{http://www.cs.umd.edu/~nelson/classes/resources/GraceSystem.shtml}}
+	\item \texttt{\href{http://www.cs.umd.edu/~nelson/classes/resources/setting_gcc_alias.shtml}{http://www.cs.umd.edu/~nelson/classes/resources/setting\_gcc\_alias.shtml}} 
+\end{itemize}
+ 
+
+
 
 \subsection{Useful UNIX Commands}
 
@@ -154,7 +163,14 @@ Although the UNIX environment may seem confusing at first, learning it is essent
 	\item \textbf{\texttt{rm}} $\rightarrow$ This command stands for 'remove'. It can be used to remove singular files, or can alternatively be used with the \texttt{-r} flag to recursively remove directories. E.g. \texttt{rm hello.c}, \texttt{rm -r project1} (project1 would be a folder.
 \end{itemize}
 
-\section{Machine}
+Lots of these UNIX commands are super useful once you get to know them, but it may be hard becoming acquainted with how they work from the outset. It's a far cry from the GUI you had in CMSC132, so here are a few tips.
+
+\begin{itemize}
+	\item If you're just starting out and still need a graphical representation of the filesystem, I'd highly recommend setting up \textbf{MobaXTerm}. The program provides just a little more graphical representation than just a pure terminal, and allows you to navigate the Grace filesystem more freely. I like to think of it as training wheels as you get acquainted with Grace.
+	\item I'd highly recommend getting used to making folders, deleting folders, deleting files, and navigating up and down through the filesystem with rapid sequences of \texttt{ls} and \texttt{cd}. As with all things, practice makes perfect, and pretty soon you'll be a command line wizard.
+\end{itemize}
+
+\subsection{Machine}
 
 A computer is composed of several parts, but a great way to think about it is a few main components connected by a \textbf{bus}. \newline
 
@@ -164,7 +180,11 @@ A computer is composed of several parts, but a great way to think about it is a 
 	\item \textbf{CPU} is the central processing unit of the computer. It handles computational operations (arithmetic, logic, etc.) and interfaces with the memory and I/O devices via the bus. The CPU is also responsible for performing the \textbf{fetch-execute cycle}.
 \end{itemize}
 
-A bus is like one main connector that's responsible for making sure the CPU, memory, and I/O devices are all able to interface with each other.
+A bus is like one main connector that's responsible for making sure the CPU, memory, and I/O devices are all able to interface with each other.\newline\newline
+Note that in this course, we won't be going too in-depth into hardware (that's more Computer Engineering), but it's great background knowledge to have as you approach this class, which is why I have included it here.
+
+\section{Week 2}
+
 
   
 \section{A Main Section (Template)}
