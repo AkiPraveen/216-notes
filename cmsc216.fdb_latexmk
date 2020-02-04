@@ -1,5 +1,5 @@
 # Fdb version 3
-["pdflatex"] 1580251987 "cmsc216.tex" "cmsc216.pdf" "cmsc216" 1580251988
+["pdflatex"] 1580256597 "cmsc216.tex" "cmsc216.pdf" "cmsc216" 1580256597
   "/etc/texmf/web2c/texmf.cnf" 1579084374 475 c0e671620eb5563b2130f56340a5fde8 ""
   "/usr/share/texlive/texmf-dist/fonts/enc/dvips/inconsolata/i4-t1-0.enc" 1480098667 7307 8f544a778f53cb535460674c7875f737 ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1511824771 3332 103109f5612ad95229751940c61aada0 ""
@@ -261,13 +261,13 @@
   "/usr/share/texmf/web2c/texmf.cnf" 1520210507 32485 c64754543d8ac501bea6e75e209ea521 ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1579084420 2700761 ac0584cc9514ab21918550a6948c4ee2 ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1579084432 4134830 0d1f858e796b5645f4c647ab5e989ffe ""
-  "cmsc216.aux" 1580251988 1856 7a29f7dddb3f32a30d6eddc935820c77 ""
-  "cmsc216.tex" 1580251987 5535 84e806b66eb047d04828212a7082d4b1 ""
-  "cmsc216.toc" 1580251988 391 35a04c5218c4d9fff06c93309e32e7bc ""
+  "cmsc216.aux" 1580256597 1893 e361ffff670bb1d149017a09200f1979 ""
+  "cmsc216.tex" 1580256597 5697 106352ac57d5e68daaa4f30121b19ebb ""
+  "cmsc216.toc" 1580256597 402 3aee5f7aa45784b5777ea5e7d3203b7b ""
   "notes.sty" 1579131239 8119 e12fe5efee01f281629a9b1c01a1d87c ""
   "umd_cs.jpg" 1579131780 2893 be774892ac0b49f3314dabd3866a9f6d ""
   (generated)
-  "cmsc216.aux"
   "cmsc216.toc"
   "cmsc216.pdf"
   "cmsc216.log"
+  "cmsc216.aux"

@@ -142,7 +142,29 @@ For more information, check out this link provided in the course slides:
 \newline
 \texttt{\href{http://www.cs.usfca.edu/~parrt/doc/debugging.html}{The Essentials of Debugging}}
 
+\subsection{Useful UNIX Commands}
 
+Although the UNIX environment may seem confusing at first, learning it is essential to navigating the Grace environment. Below are some of the basic commands that you may find useful when getting started.
+
+\begin{itemize}
+	\item \textbf{\texttt{ssh}} $\rightarrow$ If you are not using MobaXTerm, you will have to access grace using the \texttt{ssh} command. For the purpose of logging in for CMSC216, I recommend adding the \texttt{-y} flag in order to bypass the warning it will give you. E.g. \texttt{ssh -y yourdirectoryid@grace.umd.edu}
+	\item \textbf{\texttt{ls}} $\rightarrow$ The \texttt{ls} command lists all the files in your current directory. You can use the \texttt{-l} flag to get more detailed information. E.g. \texttt{ls}, \texttt{ls -l}
+	\item \textbf{\texttt{cd}} $\rightarrow$ The \texttt{cd} command changes the directory you're currently in, mainly to directories that you can see with \texttt{ls}. Typing \texttt{cd ..} will navigate one directory 'up' from your current directory, and \texttt{cd} without anything else will return you to your home directory. E.g. \texttt{cd 216public}
+	\item \textbf{\texttt{pwd}} $\rightarrow$ This command displays your current directory. Useful for finding out where exactly you are in the UNIX file hierarchy. E.g. \texttt{pwd}
+	\item \textbf{\texttt{rm}} $\rightarrow$ This command stands for 'remove'. It can be used to remove singular files, or can alternatively be used with the \texttt{-r} flag to recursively remove directories. E.g. \texttt{rm hello.c}, \texttt{rm -r project1} (project1 would be a folder.
+\end{itemize}
+
+\section{Machine}
+
+A computer is composed of several parts, but a great way to think about it is a few main components connected by a \textbf{bus}. \newline
+
+\begin{itemize}
+	\item \textbf{Memory} can just be thought of as a contiguous array of bytes. At the end of the day, this is the stuff that has to be written to/read from.
+	\item \textbf{I/O Devices} are connected to the CPU via a bus, like mentioned above. By performing read/write operations to the right adaptor, the CPU is able to interface with different I/O devices.
+	\item \textbf{CPU} is the central processing unit of the computer. It handles computational operations (arithmetic, logic, etc.) and interfaces with the memory and I/O devices via the bus. The CPU is also responsible for performing the \textbf{fetch-execute cycle}.
+\end{itemize}
+
+A bus is like one main connector that's responsible for making sure the CPU, memory, and I/O devices are all able to interface with each other.
 
   
 \section{A Main Section (Template)}
