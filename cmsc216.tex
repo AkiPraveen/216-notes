@@ -185,27 +185,75 @@ Note that in this course, we won't be going too in-depth into hardware (that's m
 
 \section{Week 2}
 
+\subsection{The Math Library}
 
-  
-\section{A Main Section (Template)}
-
-Here are some cool notes that will no doubt be very helpful to students.
-\newline\newline
-Here is some cool code in Maryland colors!
+We won't be using the math library much in C, but for the times that we do, just remember this one simple flag that we add to the gcc command. As an example, if you try to write some code that includes the math library like below, you'll find that it won't compile with a regular \texttt{gcc} command. 
 
 {\centering
 \begin{lstlisting}[language=C]
+#include <stdio.h>
+#include <math.h>
+
 int main() {
-	int x = 1;
-	int y = 2;
-	printf("hello world");
-	return x + y;
+   double value;
+
+   printf("Enter a number: ");
+   scanf("%lf", &value);     /* Notice the use of %lf */
+
+   printf("sqrt %f: \n", sqrt(value));
+   printf("power of 2: %f\n", pow(value, 2));
+   printf("sin: %f\n", sin(value));
+
+   return 0;
 }
 \end{lstlisting}
 }
 
+In this class we won't be using libraries that require this specific compilation option too much, but remember that the \texttt{-lm} flag essentially enables us to use the math library.
 
-\subsection{A Subsection}
-A subheading's text
+\subsection{Using Emacs}
+
+Most of the instruction for this course will be done in \texttt{emacs}, a highly versatile text editor that you can use in GUI form or from the command line. It's always an option to use other text editors in this class, but I would recommend using \texttt{emacs}, as it's what all the in-class demos are in. There is a way to setup IDEs like Visual Studio Code to function with Grace, but I won't cover them here. I believe that although graphical IDEs have their advantages, you'll get plenty of experience with them in CMSC330 and CMSC4XX, so for now, develop your skills in a command line editor like \texttt{emacs} or \texttt{vi}.\newline
+
+For your benefit, here are some basic commands in \texttt{emacs} that I've found useful over the time that I took 216.\newline\newline
+\textbf{Note:} When I indicate to type \texttt{M}, that means you need to press the 'meta' key. On most machines, the 'meta' key is the 'alt/option'. When I indicate to type \texttt{C}, I mean the 'control' key. The reason I'm using this notation is because it's the same notation that online guides use to describe \texttt{emacs} shortcuts.
+
+\begin{itemize}
+	\item \textbf{\texttt{C-x C-s}} $\rightarrow$ Saves the file you're working on. Remember to do this frequently on Grace, as you can't guarantee that your connection to Grace will stay intact.
+	\item \textbf{\texttt{C-x C-c}} $\rightarrow$ Closes the file that you're working on. If you haven't saved, it will prompt you to save.
+	\item \textbf{\texttt{C-x u}} $\rightarrow$ Undo the previous command that you ran.
+	\item \textbf{\texttt{C-s}} $\rightarrow$ Search forwards (this will search for text that'll be ahead of where your cursor is now.)
+	\item \textbf{\texttt{C-r}} $\rightarrow$ Search backwards (this will search for text that'll be behind where your cursor is now.)
+	\item \textbf{\texttt{C-l}} $\rightarrow$ This command will center the window around your cursor. A great technique when you have large C files that you're editing.
+	\item \textbf{\texttt{M-x column-number-mode}} $\rightarrow$ Shows column numbers. Useful if you want to check if you're above the 80 character limit.
+\end{itemize}
+
+\subsection{Debugging}
+
+There are three main debugging tools that we use in 216: Valgrind, GDB, and splint. For now, we won't focus too much on Valgrind, as it's more oriented towards helping programmers get rid of memory leaks and other memory-related issues. We will focus on GDB and Splint.
+
+\subsubsection{GDB}
+
+GDB Is the C equivalent of the Eclipse Debugger. It lets you do everything that the Eclipse Debugger allowed you to do in CMSC131 and CMSC132. The only real drawback here is that it's all done from the command line, so the graphic part of the interface is a little lacking. However, it's an essential tool that I'd highly recommend using to figure out errors in your code.\newline
+
+Online references will tell you that there are a lot of commands that you need to know to effectively use GDB, but here are some of the ones that I've found useful. \newline
+
+\begin{itemize}
+	\item \textbf{\texttt{q}} $\rightarrow$ exits gdb. Useful.
+	\item \textbf{\texttt{start}} $\rightarrow$ starts running your code with a temporary breakpoint at the first line of main(). This allows you to set more breakpoints before the code actually starts executing.
+	\item \textbf{\texttt{l}} $\rightarrow$ lists the code that you have.
+	\item \textbf{\texttt{b}} $\rightarrow$ typing p with a number next to it sets a breakpoint at a line. E.g. \texttt{b 3}
+	\item \textbf{\texttt{n}} $\rightarrow$ the equivalent of step over in the Eclipse debugger
+	\item \textbf{\texttt{s}} $\rightarrow$ the equivalent of step into in the Eclipse debugger
+	\item \textbf{\texttt{c}} $\rightarrow$ will continue running your code until the next breakpoint
+	\item \textbf{\texttt{p}} $\rightarrow$ will print the value of an expression or a variable. E.g. \texttt{p valid\_character('x')}.
+\end{itemize}
+
+In order to start GDB, you'll first need to compile your C code into an \texttt{a.out} file. Not only that, but I would recommend that you compile your code with the \texttt{-ggdb} flag, to ensure that GDB initializes your program correctly. In order to run GDB with your newly compiled program, remember to just type \texttt{gdb a.out}\newline 
   
+
+\section{Misc}
+
+This document will be updated frequently as we progress through CMSC216.
+
 \end{document}

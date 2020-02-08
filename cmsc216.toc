@@ -6,5 +6,8 @@
 \contentsline {subsection}{Useful UNIX Commands}{3}{section*.4}
 \contentsline {subsection}{Machine}{3}{section*.5}
 \contentsline {section}{\numberline {3}Week 2}{3}{section.3}
-\contentsline {section}{\numberline {4}A Main Section (Template)}{3}{section.4}
-\contentsline {subsection}{A Subsection}{4}{section*.6}
+\contentsline {subsection}{The Math Library}{3}{section*.6}
+\contentsline {subsection}{Using Emacs}{4}{section*.7}
+\contentsline {subsection}{Debugging}{4}{section*.8}
+\contentsline {subsubsection}{GDB}{4}{section*.9}
+\contentsline {section}{\numberline {4}Misc}{5}{section.4}
