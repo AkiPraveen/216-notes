@@ -160,7 +160,14 @@ Although the UNIX environment may seem confusing at first, learning it is essent
 	\item \textbf{\texttt{ls}} $\rightarrow$ The \texttt{ls} command lists all the files in your current directory. You can use the \texttt{-l} flag to get more detailed information. E.g. \texttt{ls}, \texttt{ls -l}
 	\item \textbf{\texttt{cd}} $\rightarrow$ The \texttt{cd} command changes the directory you're currently in, mainly to directories that you can see with \texttt{ls}. Typing \texttt{cd ..} will navigate one directory 'up' from your current directory, and \texttt{cd} without anything else will return you to your home directory. E.g. \texttt{cd 216public}
 	\item \textbf{\texttt{pwd}} $\rightarrow$ This command displays your current directory. Useful for finding out where exactly you are in the UNIX file hierarchy. E.g. \texttt{pwd}
+	\item \textbf{\texttt{cp}} $\rightarrow$ Copies files. If you use the \texttt{-r} flag, you're telling the command to recursively copy. If you want to use \texttt{cp} on directories, remember to use that flag.
 	\item \textbf{\texttt{rm}} $\rightarrow$ This command stands for 'remove'. It can be used to remove singular files, or can alternatively be used with the \texttt{-r} flag to recursively remove directories. E.g. \texttt{rm hello.c}, \texttt{rm -r project1} (project1 would be a folder.
+	\item \textbf{\texttt{.}}, \textbf{\texttt{..}}, \textbf{\texttt{~}}, and \textbf{\texttt{/}} $\rightarrow$ These abbreviations are pretty important. They can be used to navigate a filesystem in Unix and generate some clever commands. In order, they mean 'current directory', 'parent directory', 'user home folder', and 'root directory'. Below are some examples.
+	\begin{itemize}
+		\item \textbf{\texttt{cp *.c ../}} $\rightarrow$ Copies all files that end with \texttt{.c} to the parent directory.
+		\item \textbf{\texttt{cd /}} $\rightarrow$ Changes directories to the root directory.
+		\item \textbf{\texttt{cp -r ~/216public/projects/project1 .}} $\rightarrow$ Recursively copies (this means that it copies directories as well as files) the project1 directory and everything in it into the current directory.
+	\end{itemize}
 \end{itemize}
 
 Lots of these UNIX commands are super useful once you get to know them, but it may be hard becoming acquainted with how they work from the outset. It's a far cry from the GUI you had in CMSC132, so here are a few tips.
@@ -236,7 +243,7 @@ There are three main debugging tools that we use in 216: Valgrind, GDB, and spli
 
 GDB Is the C equivalent of the Eclipse Debugger. It lets you do everything that the Eclipse Debugger allowed you to do in CMSC131 and CMSC132. The only real drawback here is that it's all done from the command line, so the graphic part of the interface is a little lacking. However, it's an essential tool that I'd highly recommend using to figure out errors in your code.\newline
 
-Online references will tell you that there are a lot of commands that you need to know to effectively use GDB, but here are some of the ones that I've found useful. \newline
+Online references will tell you that there are a lot of commands that you need to know to effectively use GDB, but here are some of the ones that I've found useful.
 
 \begin{itemize}
 	\item \textbf{\texttt{q}} $\rightarrow$ exits gdb. Useful.
@@ -250,6 +257,21 @@ Online references will tell you that there are a lot of commands that you need t
 \end{itemize}
 
 In order to start GDB, you'll first need to compile your C code into an \texttt{a.out} file. Not only that, but I would recommend that you compile your code with the \texttt{-ggdb} flag, to ensure that GDB initializes your program correctly. In order to run GDB with your newly compiled program, remember to just type \texttt{gdb a.out}\newline 
+
+\section{Week 3}
+
+This week we go over a lot of general C-specific programming concepts in discussion, and that material is heavier than what we usually do in discussion. In that sense, I'll try and go over the more basic stuff that I think will be highly useful as you work on your projects.
+
+\subsection{Comma is an Operator}
+
+The comma in C is an operator. The best way to think about this in use is when you're declaring multiple variables at once, like when you say \texttt{int i, j = 2}.
+
+Remember, commas are \textbf{also} used as separators in C. A great example would be if you're giving a function multiple parameters, like in \texttt{printf("\%d and \%d", i, j)}. When you consider the comma as an operator in C, it's always important to understand where it's an operator vs. where it's a separator. 
+
+\subsection{Identifier Scope}
+
+Scope exists in C in a similar way that it does in other languages. All you have to remember is that if you declare variables within code blocks, they won't be accessible outside those blocks. There are two main types of scope- block scope and file scope.
+
   
 
 \section{Misc}

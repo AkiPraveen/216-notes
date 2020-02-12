@@ -5,9 +5,12 @@
 \contentsline {subsection}{Grace}{2}{section*.3}
 \contentsline {subsection}{Useful UNIX Commands}{3}{section*.4}
 \contentsline {subsection}{Machine}{3}{section*.5}
-\contentsline {section}{\numberline {3}Week 2}{3}{section.3}
-\contentsline {subsection}{The Math Library}{3}{section*.6}
+\contentsline {section}{\numberline {3}Week 2}{4}{section.3}
+\contentsline {subsection}{The Math Library}{4}{section*.6}
 \contentsline {subsection}{Using Emacs}{4}{section*.7}
-\contentsline {subsection}{Debugging}{4}{section*.8}
-\contentsline {subsubsection}{GDB}{4}{section*.9}
-\contentsline {section}{\numberline {4}Misc}{5}{section.4}
+\contentsline {subsection}{Debugging}{5}{section*.8}
+\contentsline {subsubsection}{GDB}{5}{section*.9}
+\contentsline {section}{\numberline {4}Week 3}{5}{section.4}
+\contentsline {subsection}{Comma is an Operator}{5}{section*.10}
+\contentsline {subsection}{Identifier Scope}{6}{section*.11}
+\contentsline {section}{\numberline {5}Misc}{6}{section.5}
