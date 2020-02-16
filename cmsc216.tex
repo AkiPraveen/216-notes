@@ -115,7 +115,7 @@
 This is a compilation of my notes for CMSC216 as a TA for the Spring 2020 offering of the course at the University of Maryland. All content covered in these notes was created by Dr. Ilchul Yoon and Dr. A.U. Shankar at the University of Maryland.
 \newline
 
-The actual content of this note repository is the content that I cover as a TA during my discussion section, combined with my personal insights for the course. I believe that together, these will serve as great \textbf{supplementary material} for CMSC216, but I would still highly recommend attending all of your lecture and discussion sections to achieve success in CMSC216.
+The actual content of this note repository is the content that I cover as a TA during my discussion section, combined with my personal insights for the course. I took this course with Nelson Padua-Perez in the Spring 2019 offering, so some of the notes that I'll drop in here are from my own notes when I took the course in 2019. As such, I would like to attribute certain code examples, analogies, and more to Mr. Perez. I believe that together, these will serve as great \textbf{supplementary material} for CMSC216, but I would still highly recommend attending all of your lecture and discussion sections to achieve success in CMSC216.
 \newline
 
 The notes template in use is Alex Reustle's template, which can be found on his github at the following location: \texttt{https://github.com/Areustle/CMSC351SP2016FLN}
@@ -400,12 +400,86 @@ Essentially, there are three types of linkage that you should remember to guide 
 	\item \textbf{\texttt{None}} $\rightarrow$ No linkage. This is how you usually declare your variables, and as you'd expect, doesn't do anything special in regards to linkage. Think of it this way: A variable with no linkage belongs to a single function, and cannot be shared. In other words, there is \textit{only one copy per declaration}.
 	\item \textbf{\texttt{Internal}} $\rightarrow$ Internal linkage is just a fancy way of saying you're using the \textbf{\texttt{static}} keyword. All declarations of a single identifier in file refer to the same thing. In other words, there is \textit{only one copy per file}.
 	\item \textbf{\texttt{External}} $\rightarrow$ External linkage is signified by the \texttt{extern} identifier, and it basically means that a name can only refer to a single entity in your entire program. In other words, there is \textit{only one copy per program}.
-	
 \end{itemize}
 
+\subsection{Enumerated Types}
+
+Enumerated Types, or enums, in C are pretty useful, and quite comparable to their equivalents in Java. The best way to understand enums (in my opinion) is to think of examples. Some good ones are an enum for the days of the week (Monday, Tuesday, etc.), seasons (Summer, Spring, Fall, Winter), or even suits in a deck of cards (Spades, Clubs, Hearts, Diamonds). Below is an example of the latter.
+
+{\centering
+\begin{lstlisting}[language=C]
+// example from Nelson Padua-Perez
+#include <stdio.h>
+int main() {
+	enum Suit {SPADES, HEARTS,DIAMONDS = 42, CLUBS};
+	enum Suit suit1, suit2;
+	suit1 = SPADES;
+	suit2 = CLUBS;
+	if (suit1 < suit2) printf("Spades are first.\n");
+	else printf("Clubs are first.\n");
+	printf("Spades = %d, Clubs = %d\n",suit1, suit2);
+	return 0;
+}
+\end{lstlisting}
+}
+
+The functionality here is pretty basic, but one thing that I think is worth remembering (and quite nifty if you can use it well) is that enum representations are based in integers. This means that, for example, you can get away with adding the month enum for January (0) and the month enum for February (1) and end up with February (1).\newline
+
+Again, the code above is a great example of how you can leverage the integer-like characteristics of enums.
+
+\subsection{Implicit Type Conversion and Casting in C}
+
+Switching between data types is pretty similar to how it was in Java, but here's a quick review of the stuff that matters. As you write your projects, you'll realize these things, but it's important to remember when it's a good idea to cast and when it isn't. Here are some general tips for you.\newline
+
+\begin{itemize}
+	\item \texttt{int}s are the smallest data type. If you need to describe something as a number and want to be as efficient as possible without getting fancy, the good old integer is the best way to go.
+	\item We can also cast in C, and it works almost the same was as it did in Java. Just remember, in Java we had the concept of wrapper classes that allowed us to do fancy things with certain data types. In C, we don't enjoy that luxury, so we are restricted to just basic data type casting. Below is an example.
+	
+	
+	{\centering
+\begin{lstlisting}[language=C]
+// example from Nelson Padua-Perez
+
+#include <stdio.h>                                                                    
+                                                                                      
+int main() {                                                                          
+   float x = 2.98;
+   int y = (int)x;
+}
+\end{lstlisting}
+}
+
+\item That works exactly as you think it does. It converts 2.98 to 2 as it would in Java. Remember, don't overthink it, and don't try to call any wrapper class methods that you remember from Java. As long as you keep that in mind, you should be good to convert between data types in C.
+\end{itemize}
+
+	{\centering
+\begin{lstlisting}[language=C]
+// example from Nelson Padua-Perez
+
+#include <stdio.h>                                                                    
+                                                                                      
+int main() {                                                                          
+   int x = 2000000000;                                                                
+   long result_long;                                                                  
+                                                                                      
+   printf("Value of x: %d\n", x);                                                     
+   printf("Multiplying by 3 (with %%d format): %d\n", 2000000000 * 3);                
+   printf("Multiplying by 3 (with %%ld format): %ld\n", 2000000000 * 3);              
+   printf("Multiplying by 3L (with %%d format): %d\n", 2000000000 * 3L);              
+   printf("Multiplying by 3L (with %%ld format): %ld\n", 2000000000 * 3L);            
+                                                                                      
+   result_long = 2000000000 * 3;  /* Does it solve the problem? */                    
+   printf("Storing result in long type variable: %ld\n", result_long);                
+                                                                                      
+   return 0;                                                                          
+}
+\end{lstlisting}
+}
+
+The above example from Nelson isn't that basic, but I feel like it gives you a good insight into how type conversion can find use. Give that example a try to see a cool application of using multiple data types to handle larger values. 
 
 
-\section{Misc}
+\section{Closing Thoughts}
 
 This document will be updated frequently as we progress through CMSC216. Please send errors to \texttt{apraveen@cs.umd.edu}
 
