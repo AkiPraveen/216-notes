@@ -268,11 +268,121 @@ The comma in C is an operator. The best way to think about this in use is when y
 
 Remember, commas are \textbf{also} used as separators in C. A great example would be if you're giving a function multiple parameters, like in \texttt{printf("\%d and \%d", i, j)}. When you consider the comma as an operator in C, it's always important to understand where it's an operator vs. where it's a separator. 
 
+Although we don't think about the comma operator quite a lot, one of the main reasons for understanding it would be initialization of multiple variables in a loop. Take a look at the following example from my notes (from a previous offering of the CMSC216 course).
+
+{\centering
+\begin{lstlisting}[language=C]
+// Comma Operator Example by Nelson Padua-Perez
+
+for (j=0, k=10; j<=limit; j++, k+= 10) {
+	printf("j->%d, k->%d\n", j, k);
+} 
+\end{lstlisting}
+}
+
+Notice how you initialize and increment multiple variables within a single for-loop.
+
+
 \subsection{Identifier Scope}
 
-Scope exists in C in a similar way that it does in other languages. All you have to remember is that if you declare variables within code blocks, they won't be accessible outside those blocks. There are two main types of scope- block scope and file scope. 
+Scope exists in C in a similar way that it does in other languages. All you have to remember is that if you declare variables within code blocks, they won't be accessible outside those blocks. In that regard, this phenomenon is quite similar to how Java handles scopes.
 
-  
+\subsection{C Program Memory Organization}
+
+As we delve deeper into systems-level programming, it's important to visualize how C actaully manages the memory that your programs use. The interesting part about this is that this diagram is an exact representation of system memory, so you're finally able to see 'under the hood' of your programs.\newline
+
+You can see that the lowest address is represented by \texttt{0x0} and the highest address is represented by \texttt{0xffffffff}. These addresses are actual locations in memory, represented in hexadecimal format (hence ffffffff being the highest address in the representation).
+
+\begin{center}
+
+\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+
+\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+%uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
+
+%Shape: Rectangle [id:dp1982436807499255] 
+\draw   (330,23) -- (400,23) -- (400,265) -- (330,265) -- cycle ;
+%Shape: Rectangle [id:dp02798297576071851] 
+\draw  [fill={rgb, 255:red, 184; green, 233; blue, 134 }  ,fill opacity=1 ] (332.25,227) -- (397.75,227) -- (397.75,262.5) -- (332.25,262.5) -- cycle ;
+%Shape: Rectangle [id:dp8690208046922276] 
+\draw  [fill={rgb, 255:red, 74; green, 144; blue, 226 }  ,fill opacity=1 ] (332.25,197.83) -- (397.75,197.83) -- (397.75,223.33) -- (332.25,223.33) -- cycle ;
+%Shape: Rectangle [id:dp6529311675516911] 
+\draw  [fill={rgb, 255:red, 245; green, 166; blue, 35 }  ,fill opacity=1 ] (331.75,158.83) -- (397.25,158.83) -- (397.25,194.58) -- (331.75,194.58) -- cycle ;
+%Up Arrow [id:dp9371264302671377] 
+\draw  [fill={rgb, 255:red, 80; green, 227; blue, 194 }  ,fill opacity=1 ] (354,148.03) -- (364.13,137) -- (374.25,148.03) -- (369.19,148.03) -- (369.19,164.58) -- (359.06,164.58) -- (359.06,148.03) -- cycle ;
+%Shape: Rectangle [id:dp8515554275840291] 
+\draw  [fill={rgb, 255:red, 208; green, 2; blue, 27 }  ,fill opacity=1 ] (332.25,25.5) -- (397.75,25.5) -- (397.75,65.5) -- (332.25,65.5) -- cycle ;
+%Down Arrow [id:dp38470823955499234] 
+\draw  [fill={rgb, 255:red, 80; green, 227; blue, 194 }  ,fill opacity=1 ] (355,72.1) -- (359.44,72.1) -- (359.44,58) -- (368.31,58) -- (368.31,72.1) -- (372.75,72.1) -- (363.88,81.5) -- cycle ;
+
+% Text Node
+\draw (365,211.25) node   [align=left] {{\fontfamily{pcr}\selectfont Data}};
+% Text Node
+\draw (365,244.75) node   [align=left] {{\fontfamily{pcr}\selectfont Text}};
+% Text Node
+\draw (364.5,176.71) node   [align=left] {{\fontfamily{pcr}\selectfont Heap}};
+% Text Node
+\draw (365,45.5) node   [align=left] {{\fontfamily{pcr}\selectfont Stack}};
+% Text Node
+\draw (299,24) node   [align=left] {0xffffffff};
+% Text Node
+\draw (301,262) node   [align=left] {0x0};
+
+
+
+\end{tikzpicture}
+
+\end{center}
+
+
+Your program is allocated a certain block of memory- within it are the following 4 components. Keep in mind that this too, is an abstraction. You can further explore how programs are represented in memory in classes like CMSC411, but this is just about as far as we'll go in 216.
+
+\begin{itemize}
+	\item \textbf{Text} is where the code for your program goes. It's really not much more complex than that.
+	\item \textbf{Data} is where global variables and variables that are static belong.
+	\item \textbf{Heap} is where dynamically allocated memory lives. In Java, this stuff was managed for you. In C, you will have to manage it yourself, allocating memory and effectively increasing the size of the heap if you need more space while your program is running, and deallocating (freeing) memory to decrease the size of the heap. More on this when we discuss dynamically allocated memory.
+	\item \textbf{Stack} is where local variables and function parameters live. It grows downwards (eventually meeting the heap and causing a stackoverflow) as functions are called. If you'll think back to 'stack frames' from recursion in CMSC132, this is the exact same concept.
+\end{itemize}
+
+\subsection{Storage}
+
+There are two types of ways variables are stored in C- automatic and static. This basically goes hand-in-hand with block scopes and file scopes, but the important takeaways are these. First of all, in the example below, after the function \texttt{foo} is called, the variable \texttt{n} is thrown away.
+
+{\centering
+\begin{lstlisting}[language=C]
+int foo(int k) {
+	int n = 216;
+	return n;
+}
+\end{lstlisting}
+}
+
+In that regard, the variable \texttt{n} has automatic storage. If a variable has static storage, it basically exists throughout the duration of your program's running time. Such variables are initialized only once.\newline
+
+An important note: \texttt{static} in C does not mean the same thing as it does in Java. Here are the two main things that I think are worth remembering about static variables in C:
+
+\begin{itemize}
+	\item Static variables need not necessarily be initialized. If you don't bother initializing a static variable (you still have to declare it- this is not Python, language of the heathen) it will automatically initialize to zero.
+	\item Static variables retain their values between function invocations. In other words, they are not stored using automatic storage.
+\end{itemize}
+
+{\centering
+\begin{lstlisting}[language=C]
+// example from Nelson Padua-Perez
+
+void compute_static(int x) {                                                    
+   static int value = 100; /* What would happen if we don't initialize it? */         
+                                                                                
+   printf("(static) x: %d, value: %d, sum: %d \n", x, value, value + x);        
+                                                                                
+   ++value;                                                                     
+} 
+\end{lstlisting}
+}
+
+In the example above, if you called \texttt{compute\_static} twice, then your output would be \texttt{(static) x: 1, value: 100, sum: 101} and \texttt{(static) x: 1, value: 101, sum: 102}, as 'value' would retain its data between function calls.
+
+
 
 \section{Misc}
 
