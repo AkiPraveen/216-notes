@@ -382,6 +382,27 @@ void compute_static(int x) {
 
 In the example above, if you called \texttt{compute\_static} twice, then your output would be \texttt{(static) x: 1, value: 100, sum: 101} and \texttt{(static) x: 1, value: 101, sum: 102}, as 'value' would retain its data between function calls.
 
+\subsection{Linkage}
+
+Linkage is essentially the science behind having C code spread across multiple files and making sure it all compiles and works properly.\newline
+
+We want to sometimes split code between multiple files for organizational purposes. Currently, the projects you're working on are small, but in order to make your programs versatile, modular and better organized, it's a great idea to split code between files.\newline
+
+When you attempt this, there may be issues that follow. For example, you may encounter a situation where you want to name a function \texttt{print\_sum()} in two files. How would we deal with such a duplicate?\newline
+
+Problems of this sort can be solved by adjusting the \textbf{linkage} of these functions.\newline
+
+For actual code examples, please check the linkage-examples in the 216public directory. They're extremely thorough. My goal here is to provide a quick few tips on what I think are the most important parts.\newline
+
+Essentially, there are three types of linkage that you should remember to guide you through writing code in multiple C files.
+
+\begin{itemize}
+	\item \textbf{\texttt{None}} $\rightarrow$ No linkage. This is how you usually declare your variables, and as you'd expect, doesn't do anything special in regards to linkage. Think of it this way: A variable with no linkage belongs to a single function, and cannot be shared. In other words, there is \textit{only one copy per declaration}.
+	\item \textbf{\texttt{Internal}} $\rightarrow$ Internal linkage is just a fancy way of saying you're using the \textbf{\texttt{static}} keyword. All declarations of a single identifier in file refer to the same thing. In other words, there is \textit{only one copy per file}.
+	\item \textbf{\texttt{External}} $\rightarrow$ External linkage is signified by the \texttt{extern} identifier, and it basically means that a name can only refer to a single entity in your entire program. In other words, there is \textit{only one copy per program}.
+	
+\end{itemize}
+
 
 
 \section{Misc}
