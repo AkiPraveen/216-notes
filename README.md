@@ -7,5 +7,7 @@ Created as a supplementary resource- a compiled set of my notes and insights fro
 ## Table of Contents
 * Week 1
 * Week 2
-* Week 3 (In Progress)
+* Week 3
+* Week 4
+* Week 5 (In progress)
 
