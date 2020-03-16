@@ -476,8 +476,249 @@ int main() {
 \end{lstlisting}
 }
 
-The above example from Nelson isn't that basic, but I feel like it gives you a good insight into how type conversion can find use. Give that example a try to see a cool application of using multiple data types to handle larger values. 
+The above example from Nelson isn't that basic, but I feel like it gives you a good insight into how type conversion can find use. Give that example a try to see a cool application of using multiple data types to handle larger values.
 
+\section{Week 4}
+
+This week we cover pointers, a few functions in C that you may find useful, and GDB in emacs. The main focus of these notes will be pointers, and chances are that you've seen a lot of this stuff in lecture as well. Make sure to take some time to try out the examples that we've got for you so you understand the basics of how pointers work, as they're a fundamental part of C.
+
+\subsection{Pointers \& Memory Maps}
+
+Let's go over pointers in C. You may have already covered this subject in lecture, but I'd like to point out some of the nuances that helped me understand pointers when I was taking 216. \newline
+
+First of all, take note that pointers are just another type of variable. Just like you have \texttt{int}s and \texttt{char}s in C, which take up a certain amount of space and store a certain type of data, a \textbf{pointer} is a data type that stores an \textbf{address}. \newline
+
+There are a bunch of ways to think of pointers, but I think the easiest way to understand them is to use memory maps. Think of them as as a tool to help us better understand how pointers work- they are essentially just visual representations of memory in C. \newline
+
+I think that pointers and memory maps go hand in hand in 216, so I'll include some examples (some of my own, plus the examples we go over in discussion) that I think will help you become proficient with both pointers and memory maps. \newline
+
+As a side note, you can take a look at Nelson's sample memory map online if you need some extra guidance. (This should have been covered in discussion). \newline
+
+\texttt{\href{http://www.cs.umd.edu/~nelson/classes/resources/MemoryMapExample.pdf}{http://www.cs.umd.edu/~nelson/classes/resources/MemoryMapExample.pdf}}
+
+
+
+
+\subsection{Example - Integer \& Integer Pointer\newline} 
+
+
+{
+\centering
+
+
+
+\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+
+\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+%uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
+
+%Shape: Rectangle [id:dp058944761853589434] 
+\draw   (369,30) -- (420,30) -- (420,59.14) -- (369,59.14) -- cycle ;
+%Shape: Rectangle [id:dp8289049315294679] 
+\draw   (370,103.33) -- (421,103.33) -- (421,132.48) -- (370,132.48) -- cycle ;
+%Straight Lines [id:da15432785379816327] 
+\draw    (395.5,117.9) -- (394.37,62) ;
+\draw [shift={(394.33,60)}, rotate = 448.85] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+
+% Text Node
+\draw (330,44) node   [align=left] {{\fontfamily{pcr}\selectfont int a}};
+% Text Node
+\draw (394.5,44.57) node   [align=left] {5};
+% Text Node
+\draw (325.67,116.33) node   [align=left] {{\fontfamily{pcr}\selectfont int * b}};
+
+
+
+\end{tikzpicture}
+
+	
+\begin{lstlisting}[language=C]
+// example from Nelson Padua-Perez
+
+#include <stdio.h>                                                                    
+                                                                                      
+int main() {                                                                          
+
+	int a = 5;
+
+	int * b = &a;   
+	
+	return 1;
+}
+\end{lstlisting}
+
+
+}
+
+This is about as simple as we can get with pointers. There are a variety of types of pointers that exist (one for each data type in C), but just remember that they're essentially just variables that store addresses.\newline
+
+In this example, we can see that \texttt{a} is an integer, and \texttt{b} is an integer pointer. Although I've drawn an arrow from the inside of \texttt{b}'s box to \texttt{a}'s box, don't let that confuse you. \newline
+
+Think of it like this- \texttt{a} \textbf{contains} the integer value 5. \texttt{b} \textbf{contains} the address of \texttt{a}. By convention in C, we say that \texttt{b} points to \texttt{a}. We just show this by drawing an arrow that starts in \texttt{b}'s box and points to \texttt{a}.
+
+\subsection{Example - Multiple Pointer Types\newline}
+
+{
+\centering
+
+
+
+
+\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+
+\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+%uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
+
+%Shape: Rectangle [id:dp058944761853589434] 
+\draw   (353,164) -- (404,164) -- (404,193.14) -- (353,193.14) -- cycle ;
+%Shape: Rectangle [id:dp8289049315294679] 
+\draw   (354,237.33) -- (405,237.33) -- (405,266.48) -- (354,266.48) -- cycle ;
+%Straight Lines [id:da15432785379816327] 
+\draw    (379.5,251.9) -- (378.37,196) ;
+\draw [shift={(378.33,194)}, rotate = 448.85] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Shape: Rectangle [id:dp0020066675833932957] 
+\draw   (223.67,28.67) -- (274.67,28.67) -- (274.67,57.81) -- (223.67,57.81) -- cycle ;
+%Shape: Rectangle [id:dp16429220233511355] 
+\draw   (224.67,102) -- (275.67,102) -- (275.67,131.14) -- (224.67,131.14) -- cycle ;
+%Straight Lines [id:da051837340435018975] 
+\draw    (250.17,116.57) -- (249.04,60.67) ;
+\draw [shift={(249,58.67)}, rotate = 448.85] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Shape: Rectangle [id:dp1385770633532739] 
+\draw   (465.67,28.67) -- (516.67,28.67) -- (516.67,57.81) -- (465.67,57.81) -- cycle ;
+%Shape: Rectangle [id:dp03270745379570461] 
+\draw   (467.33,105.33) -- (518.33,105.33) -- (518.33,134.48) -- (467.33,134.48) -- cycle ;
+%Straight Lines [id:da3069083126116453] 
+\draw    (492.17,116.57) -- (491.04,60.67) ;
+\draw [shift={(491,58.67)}, rotate = 448.85] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+
+% Text Node
+\draw (284.67,177.33) node   [align=left] {{\fontfamily{pcr}\selectfont double my\_double}};
+% Text Node
+\draw (378.5,178.57) node   [align=left] {9.0};
+% Text Node
+\draw (272.33,251.67) node   [align=left] {{\fontfamily{pcr}\selectfont double * double\_ptr}};
+% Text Node
+\draw (159.33,44) node   [align=left] {{\fontfamily{pcr}\selectfont int my\_integer}};
+% Text Node
+\draw (249.17,43.24) node   [align=left] {6};
+% Text Node
+\draw (151,113.67) node   [align=left] {{\fontfamily{pcr}\selectfont int * integer\_ptr}};
+% Text Node
+\draw (399.33,44) node   [align=left] {{\fontfamily{pcr}\selectfont char my\_char}};
+% Text Node
+\draw (491.17,43.24) node   [align=left] {e};
+% Text Node
+\draw (395,118.33) node   [align=left] {{\fontfamily{pcr}\selectfont char * char\_ptr}};
+
+
+\end{tikzpicture}
+
+
+	
+\begin{lstlisting}[language=C]
+// example from Nelson Padua-Perez
+
+#include <stdio.h>                                                                    
+                                                                                      
+int main() {                                                                          
+
+	int my\_integer = 6;
+	double my\_double = 9.0;
+	char my\_char = 'e';
+	
+	int * int\_ptr = &my\_integer;
+	double * double\_ptr = &my\_double;
+	char * char\_ptr = &my\_char;
+	
+}
+\end{lstlisting}
+
+
+}
+
+Here's a similar case to up above, but I just wanted to demonstrate that there are different types of pointers. Now, keep in mind that all of these pointers essentially hold addresses, and it's not like the address of a double looks much different from the address of a character or the address of an integer.\newline
+
+If you're wondering why C is so specific and asks you to define the type of pointer, the answer lies in how we will treat the data that's within the pointer. Sure, it may be that all pointers hold addresses, but what happens if we try to add the contents of \texttt{double\_ptr} and \texttt{integer\_ptr}? If C only had one pointer type and we tried to add the contents of those two pointers together, there would be no way of knowing that we made a mistake until runtime. In that sense, C maintains different types of pointers to ensure type compatibility. The same address could be given by the C memory manager to an integer pointer or a double pointer, but in order to make sure that you're treating whatever is stored at that address in a type-compatible way, C makes sure to note the type of what you're pointing to.
+
+
+\subsection{Example - Pointer To a String (Char Array) \newline}
+
+{
+\centering
+
+
+
+
+
+
+\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+
+\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+%uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
+
+%Shape: Rectangle [id:dp16429220233511355] 
+\draw   (245.67,207) -- (296.67,207) -- (296.67,236.14) -- (245.67,236.14) -- cycle ;
+%Straight Lines [id:da051837340435018975] 
+\draw    (271.17,221.57) -- (271.98,148.5) ;
+\draw [shift={(272,146.5)}, rotate = 450.64] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Shape: Rectangle [id:dp8412783566407918] 
+\draw   (243.67,117) -- (294.67,117) -- (294.67,146.14) -- (243.67,146.14) -- cycle ;
+%Shape: Rectangle [id:dp7327342661859714] 
+\draw   (294.67,117) -- (345.67,117) -- (345.67,146.14) -- (294.67,146.14) -- cycle ;
+%Shape: Rectangle [id:dp03554725186896712] 
+\draw   (345.67,117) -- (396.67,117) -- (396.67,146.14) -- (345.67,146.14) -- cycle ;
+%Shape: Rectangle [id:dp5893017620753757] 
+\draw   (396.67,117) -- (447.67,117) -- (447.67,146.14) -- (396.67,146.14) -- cycle ;
+%Shape: Rectangle [id:dp8682717330515748] 
+\draw   (447.67,117) -- (498.67,117) -- (498.67,146.14) -- (447.67,146.14) -- cycle ;
+
+% Text Node
+\draw (169,217.67) node   [align=left] {{\fontfamily{pcr}\selectfont char[5] my\_string}};
+% Text Node
+\draw (269.17,131.57) node   [align=left] {\textbackslash 0};
+% Text Node
+\draw (320.17,131.57) node   [align=left] {\textbackslash 0};
+% Text Node
+\draw (371.17,131.57) node   [align=left] {\textbackslash 0};
+% Text Node
+\draw (422.17,131.57) node   [align=left] {\textbackslash 0};
+% Text Node
+\draw (473.17,131.57) node   [align=left] {\textbackslash 0};
+
+
+\end{tikzpicture}
+
+
+
+	
+\begin{lstlisting}[language=C]
+// example from Nelson Padua-Perez
+
+#include <stdio.h>                                                                    
+                                                                                      
+int main() {                                                                          
+
+	char my_string[5];
+	
+}
+\end{lstlisting}
+
+
+}
+
+Finally, here's a look at how we would store a string. I picked a string because it's essentially an array of characters, so we get to see how both are represented in memory maps. \newline
+
+Here, don't let the notation confuse you. Although I've declared the string \texttt{my\_string} in special notation, it's still essentially a pointer to a character. In this case, \texttt{my\_string} is a pointer to the first of 5 characters that C has allocated as \texttt{NULL} for us. I've taken the liberty to fill the allocated blocks in as null bytes. 
+
+\subsection{Lab Examples}
+
+I'll also go over the examples that we went over in lab, but a little less in-depth, as they're usually a bunch of concepts put together. We'll focus on what I think are the important portions of each example.
+
+\subsection{Example from Lab - ptr\_review.c}
+
+\subsection{Example from Lab - ptr\_add\_sub\_overview.c}
+
+\subsection{Example from Lab - str\_review.c}
 
 \section{Closing Thoughts}
 
