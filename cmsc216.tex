@@ -216,7 +216,9 @@ int main() {
 \end{lstlisting}
 }
 
-In this class we won't be using libraries that require this specific compilation option too much, but remember that the \texttt{-lm} flag essentially enables us to use the math library.
+Remember that the \texttt{-lm} flag essentially enables us to use the math library. In other words, if you want to compile the above file and have it work properly, (let's assume it's called \texttt{math\_example.c}) then you'll want to compile it using the following command.\newline
+
+\texttt{gcc -lm math\_example.c}
 
 \subsection{Using Emacs}
 
@@ -950,6 +952,71 @@ int main() {
 	\item Both of these get and print a single character, and in my opinion, there's no real reason to need them except in very special cases, but this is how I/O will be conducted in Assembly, so I think it's worth taking a look at this now.
 	\item Your main takeaway from this should be that \texttt{getchar} and \texttt{putchar} are functions that we can use to do I/O in C, and even though they're a little more crude than we'd like for most applications, they still exist, and are helpful tools when we're trying to understand Assembly.
 \end{itemize}
+
+\section{Week 5}
+
+\subsection{Grep - A 'CTRL-F' From the Command Line}
+
+When working with the command line, we have the unique opportunity to see older versions of computer tools that we are accustomed to today. In modern environments, if you want to find something on a webpage, textbook, or even in your \texttt{.java} file in Eclipse, the first thing that probably comes to you head is the command '\texttt{CTRL + F}'. In a command line environment, the command that preceded this functionality is known as \texttt{grep}. 
+
+\subsubsection{Why is it called that?}
+The name of the command itself has an interesting origin. The most basic text editor on UNIX systems is regarded by many as \texttt{ed}, and on that text editor, one was able to globally search the file for a regular expression (which you'll learn morere about in CMSC330), then print what was found using the command '\texttt{g/re/p}'. This gave way to the name "grep".
+
+\subsubsection{Why it's useful}
+
+As you'd imagine, grep can be used to simply search the files we have for keywords. Let's take a look at some examples. You can follow along if you head over to \texttt{216public/labs/Week5/lab 1/grep\_example}.
+
+Let's take a look at the text files that we will be searching through, as examples.
+
+\begin{lstlisting}[language=C]
+The college is in
+the east coast.  
+\end{lstlisting}
+\begin{center}
+\textbf{data.txt}
+\end{center}
+
+
+\begin{lstlisting}[language=C]
+The project is about hashing,
+files, structures,
+pointers
+and dynamic memory allocation (and more pointers).  
+\end{lstlisting}
+\begin{center}
+\textbf{summary.txt}
+\end{center}
+
+
+These two files are in the same directory, and for the purpose of the examples I'll go over, let's assume that we're currently in the directory that contains both these files.\newline
+
+\texttt{grep} works like this: you provide it a key phrase and a file location, and it'll take care of the rest. If you want more technical information on how grep commands should be structured, I encourage you to take a look at \texttt{man grep}. \newline
+
+If you execute the command \texttt{grep college data.txt}, then grep will print out the line that it found your keyword on. (the output for that command will be \texttt{The college is in}.)\newline
+
+Where \texttt{grep} really shines is when you want to mix in some of the cool UNIX keywords we've been learning. As a quick example, let's say you wanted to search for all the occurrences of 'is' in all the text files you had in the file. To do that, you'd simply execute the following command.\newline
+
+\texttt{grep is *}\newline
+
+That would yield the following:\newline
+
+\texttt{data.txt:The college is in\newline
+summary.txt:The project is about hashing,
+}\newline
+
+In a more practical example, let's think about how you could use this when writing your projects. Let's say you had a particularly tough project with 20 public tests. You're failing a bunch of them, but you suspect it's because the tests are calling a function you know you haven't implemented properly yet, named \texttt{get\_classroom\_number()}.\newline
+
+Assuming that public test files are named as they usually are in this class, and that you're in your project directory, if you wanted to figure out which public tests were testing for the \texttt{get\_classroom\_number()} function, all you have to do is cook up a \texttt{grep} command to do that for you. Here's what we'd be looking at in this case:\newline
+
+\texttt{grep get\_classroom\_number() public*}\newline
+
+This would search for the keyword \texttt{get\_classroom\_number()} in every file that started with 'public', which is exactly what we want. (Remember your UNIX special characters!). Additionally, here's one extra little trick that might make grepping a little bit easier- if you want to see the line numbers that your searches actually appear on, go ahead and use the \texttt{-n} flag when you run grep. The previous example would then look like this:\newline
+
+\texttt{grep -n get\_classroom\_number() public*}\newline
+
+\subsection{Memcpy, Memmove, and Memset}
+
+% TODO add this section
 
 \section{Closing Thoughts}
 
