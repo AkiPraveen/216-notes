@@ -716,9 +716,240 @@ I'll also go over the examples that we went over in lab, but a little less in-de
 
 \subsection{Example from Lab - ptr\_review.c}
 
+Here, we'll talk a little bit about\texttt{ptr\_review.c} \newline (This file can be found at \texttt{~/216public/labs/Week4/lab1}) \newline
+
+This is just going over the basics of pointers, and it has a few functions that demonstrate a few things, but I'd just like to go over a few of the questions posed in the actual file.
+
+{
+\centering
+\begin{lstlisting}[language=C]
+// example from Nelson Padua-Perez
+
+int main(void) {   /* notice use of void in main */                                   
+   float *p, *m;   /* have garbage value */                                           
+   float pressure; /* has garbage value */                                            
+   int area = 10;                                                                     
+   int a[3] = {777, 888};  /* missing value? */                                       
+                                                                                      
+   p = &pressure;  /* & returns address */                                            
+   m = p;          /* both m and p point to the same entity */                        
+   printf("Value1 %.2f\n", *m); /* are we ever getting a segmentation fault?*/
+   
+   ...
+	
+   return 0;
+   
+}
+
+\end{lstlisting}
+}
+
+\begin{itemize}
+	\item Using the keyword \texttt{void} in main essentially means that your program will be taking no arguments. That's the long and short of it.
+	\item When we define \texttt{p} and \texttt{m} as pointers and don't assign anything to them, they essentially contain garbage values. If you want a visual representation of that, just imagine two pointer variables with arrows pointing into the unknown. We don't know what they're pointing to, nor do we want to find out.
+	\item It's the same deal if we define a float without assigning it a value- it contains a garbage value.
+	\item When they set \texttt{m} equal to \texttt{p}, they're making it so both pointers are pointing to the same variable. If that confuses you, think of it the other way- pointers contain addresses, and it just so happens that after executing \texttt{m = p;}, both \texttt{m} and \texttt{p} contain the same addresses.
+\end{itemize}
+
+{
+\centering
+
+
+\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+
+\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+%uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
+
+%Shape: Rectangle [id:dp16429220233511355] 
+\draw   (245.67,207) -- (296.67,207) -- (296.67,236.14) -- (245.67,236.14) -- cycle ;
+%Straight Lines [id:da051837340435018975] 
+\draw    (271.17,221.57) -- (318.07,132.27) ;
+\draw [shift={(319,130.5)}, rotate = 477.71] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Shape: Rectangle [id:dp5176612453446056] 
+\draw   (352.67,207) -- (403.67,207) -- (403.67,236.14) -- (352.67,236.14) -- cycle ;
+%Straight Lines [id:da9913485463278986] 
+\draw    (378.17,221.57) -- (320.09,132.18) ;
+\draw [shift={(319,130.5)}, rotate = 416.99] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Shape: Rectangle [id:dp7874256794735744] 
+\draw   (292.67,100) -- (343.67,100) -- (343.67,129.14) -- (292.67,129.14) -- cycle ;
+
+% Text Node
+\draw (232,218.67) node   [align=left] {{\fontfamily{pcr}\selectfont m}};
+% Text Node
+\draw (337,219.67) node   [align=left] {{\fontfamily{pcr}\selectfont p}};
+% Text Node
+\draw (250,112.67) node   [align=left] {{\fontfamily{pcr}\selectfont pressure}};
+
+
+\end{tikzpicture}
+
+}
+
+\begin{itemize}
+	\item Finally, when it asks if we are ever getting a segfault, the short answer is \textbf{maybe}. In C, dereferencing a pointer that we have not yet initialized is considered \textbf{undefined behavior}. It could provide us with garbage data, give us a segfault because we tried to access corrupted data, or give us a segfault because we tried to access data locked off by the system. We don't really know what will happen in this case, so we're calling it undefined behavior. In grace, variables that aren't initialized are given a value of 0 or NULL, so we won't see this effect here. However, running in any other C environment will yield undefined behavior.
+\end{itemize}
+
 \subsection{Example from Lab - ptr\_add\_sub\_overview.c}
 
+Here, we'll talk a little bit about \texttt{ptr\_add\_sub\_overview.c} \newline (This file can be found at\texttt{~/216public/labs/Week4/lab1}) \newline
+
+This example is all about pointer arithmetic, and it relies on the fact that you understand that arrays are stored in contiguous memory. Let's think about the following example. If you had an array that was represented in C memory like this:\newline\newline
+
+{
+\centering
+
+
+
+
+\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+
+\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+%uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
+
+%Shape: Rectangle [id:dp5176612453446056] 
+\draw   (228.67,212) -- (279.67,212) -- (279.67,241.14) -- (228.67,241.14) -- cycle ;
+%Straight Lines [id:da9913485463278986] 
+\draw    (254.17,226.57) -- (258.9,132.5) ;
+\draw [shift={(259,130.5)}, rotate = 452.88] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Shape: Rectangle [id:dp7874256794735744] 
+\draw   (234.67,99) -- (285.67,99) -- (285.67,128.14) -- (234.67,128.14) -- cycle ;
+%Shape: Rectangle [id:dp04481985338500627] 
+\draw   (285.67,99) -- (336.67,99) -- (336.67,128.14) -- (285.67,128.14) -- cycle ;
+%Shape: Rectangle [id:dp7253813806088456] 
+\draw   (336.67,99) -- (387.67,99) -- (387.67,128.14) -- (336.67,128.14) -- cycle ;
+%Shape: Rectangle [id:dp7617124294428573] 
+\draw   (387.67,99) -- (438.67,99) -- (438.67,128.14) -- (387.67,128.14) -- cycle ;
+%Shape: Rectangle [id:dp12383450763178705] 
+\draw   (438.67,99) -- (489.67,99) -- (489.67,128.14) -- (438.67,128.14) -- cycle ;
+
+% Text Node
+\draw (213,224.67) node   [align=left] {{\fontfamily{pcr}\selectfont p}};
+% Text Node
+\draw (260.17,113.57) node   [align=left] {1};
+% Text Node
+\draw (311.17,113.57) node   [align=left] {6};
+% Text Node
+\draw (362.17,113.57) node   [align=left] {6};
+% Text Node
+\draw (413.17,113.57) node   [align=left] {1};
+% Text Node
+\draw (464.17,113.57) node   [align=left] {2};
+
+
+\end{tikzpicture}
+
+
+}
+
+
+In this case, since arrays are stored in contiguous memory, so essentially what we are claiming with pointer arithmetic is that, if we dereference \texttt{p} now, we will get the number 1. If we \textbf{add} 1 to p (the actual pointer) and then dereference it, we will get the number 6. The file explores similar examples. Here are some highlights.
+
+\begin{itemize}
+	\item Just like we discussed earlier, here's an application of simple pointer addition. As a reminder you can add numbers other than 1.
+	\begin{lstlisting}[language=C]
+// example from Nelson Padua-Perez
+
+char name[MAX] = "The House is Blue";                                              
+   char *p = name, *q;                                                                
+   int i;                                                                             
+                                                                                      
+   /* You can add and subtract integer values from pointers.   */                     
+   /* For example, if you add one to a pointer to a character  */                     
+   /* array, the pointer will now be referring to the next     */                     
+   /* character.  You can add any integer value (not just one) */                     
+                                                                                      
+   /* Printing the string using pointer arithmetic */                                 
+   while (*p != '\0') {                                                               
+      printf("%c", *p);                                                               
+      p = p + 1;                                                                      
+   }
+   
+}
+
+\end{lstlisting}
+
+	\item You can also take advantage of the fact that arrays are stored in contiguous memory by subtracting pointers to find 'distance' between them. Note that this only works with pointers of the same type.
+	
+\begin{lstlisting}[language=C]
+// example from Nelson Padua-Perez
+
+   /* You can tell how many elements are between two pointers */                      
+   /* by subtracting pointers */                                                      
+   p = name + 1;                                                                      
+   q = &name[5];                                                                      
+   printf("Elements #1: %ld\n", q - p);                                               
+   printf("Elements #2: %ld\n", p - q);
+
+\end{lstlisting}
+
+\item Finally, you can leverage pointer arithmetic to help you index arrays as well. Here's an example of that below.
+
+
+\begin{lstlisting}[language=C]
+// example from Nelson Padua-Perez
+
+   /* Indexing is a pointer operation */                                              
+   printf("Indexing as pointer operation\n");                                         
+   p = name;                                                                          
+   for (i = 0; i < strlen(name); i++) {                                               
+      printf("%c\n", p[i]);                                                           
+   }
+
+\end{lstlisting}
+
+	
+\end{itemize}
+
 \subsection{Example from Lab - str\_review.c}
+
+Here, we'll talk a little bit about\texttt{str\_review.c} \newline (This file can be found at \texttt{~/216public/labs/Week4/lab1}) \newline
+
+This example is pretty light compared to the rest- and it is just a review of how strings are stored in C. The main overarching concept you need to understand here is two things:
+
+\begin{itemize}
+	\item Strings are not given an actual data type in C. They are simply arrays of characters with a small caveat.
+	\item That being said, strings are always stored in a certain way. They are a character array terminated with a null byte. (No null byte at the end means you don't have a string- you have a regular old character array)
+\end{itemize}
+
+Take a look at my String example above for the memory map representation.
+
+\subsection{Using getchar() and putchar()}
+
+The two functions \texttt{getchar} and \texttt{putchar} are pretty curious, in that we have much more functional replacements for them- \texttt{scanf} and \texttt{printf}, respectively. However, learning these is a cool way to prep yourself for how basic I/O in assembly works, so I think that it's worth it to at least gloss over these for now. \newline
+
+Let's look over the code provided for us in discussion and touch on the main points.
+
+\begin{lstlisting}[language=C]
+// example from Nelson Padua-Perez
+
+#include <stdio.h>                                                                    
+                                                                                      
+#define MAX_LEN 80                                                                    
+                                                                                      
+int main() {                                                                          
+   char value[MAX_LEN + 1];                                                           
+   int letter; /* Why integer? */                                                     
+                                                                                      
+   printf("Enter a letter: ");                                                        
+   scanf("%1s", value);                                                               
+   printf("Value entered: \"%s\"\n", value);                                          
+   getchar();   /* getchar() reads a single character; why we need it? */             
+   printf("Enter a letter: ");                                                        
+   letter = getchar();                                                                
+   printf("Letter entered: ");                                                        
+   putchar(letter);      /* putchar() prints a single character */                    
+   printf("\n");                                                                      
+                         /* try ungetc to put characters back */                      
+                                                                                      
+   return 0;                                                                          
+}  
+\end{lstlisting}
+
+\begin{itemize}
+	\item First of all, both \texttt{getchar} and \texttt{putchar} deal with integers, despite the fact that they are meant to take in/print characters. Don't let this confuse you, they're simply storing them by the ASCII value.
+	\item Both of these get and print a single character, and in my opinion, there's no real reason to need them except in very special cases, but this is how I/O will be conducted in Assembly, so I think it's worth taking a look at this now.
+	\item Your main takeaway from this should be that \texttt{getchar} and \texttt{putchar} are functions that we can use to do I/O in C, and even though they're a little more crude than we'd like for most applications, they still exist, and are helpful tools when we're trying to understand Assembly.
+\end{itemize}
 
 \section{Closing Thoughts}
 
