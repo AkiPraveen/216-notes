@@ -1035,6 +1035,91 @@ As a final side note, you can get more information on all three of these functio
 	\item \texttt{man 3 memmove}
 \end{itemize}
 
+\section{Week 6}
+
+This week is a quiz week, so we held open office hours during discussion and answered specific questions. Honestly, for reviews for quizzes, I would highly recommend checking Piazza for the answers and clarifications that you're looking for. In this guide, since we really just went over specifics during discussion before the quiz, I'm going to skip over this and get straight to what we covered after the quiz.
+
+\subsection{Preprocessor}
+
+Here, we'll be talking a little bit about C's preprocessing and compiling. Preprocessing is essentially the stuff that C provides for your code right before it compiles, e.g. replacing macros with their appropriate text values.
+
+\subsubsection{Compiling a C Program}
+
+When you compile a C program, a few things happen behind the scenes. First, a source file (\texttt{.c}) is compiled into an object file (\texttt{.o}). Think of the object file as an intermediary step between a C file and an executable. An object file isn't necessarily an executable let, but it's about halfway there. This'll help us a lot more when we talk about \texttt{make}, but for now, that's all you really need to remember.\newline
+
+After an object file is created, it can be compiled into an executable, which is usually done by the linker. Essentially, the linker just does some cleanup work with symbols that you've defined, global variables, and other data.\newline
+
+
+{
+\centering
+
+
+
+
+
+
+\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+
+\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+%uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
+
+%Flowchart: Process [id:dp9087722479160656] 
+\draw   (100,59) -- (180,59) -- (180,129) -- (100,129) -- cycle ;
+%Flowchart: Process [id:dp18707723736432025] 
+\draw   (215.33,59) -- (295.33,59) -- (295.33,129) -- (215.33,129) -- cycle ;
+%Flowchart: Process [id:dp26379991992077745] 
+\draw   (330.67,59) -- (410.67,59) -- (410.67,129) -- (330.67,129) -- cycle ;
+%Straight Lines [id:da45725440322215305] 
+\draw    (179.67,94) -- (213,94) ;
+\draw [shift={(215,94)}, rotate = 180] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da739474493577637] 
+\draw    (295.67,94) -- (329,94) ;
+\draw [shift={(331,94)}, rotate = 180] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+
+% Text Node
+\draw (140,94) node   [align=left] {{\fontfamily{pcr}\selectfont {\small source file}}};
+% Text Node
+\draw (255.33,94) node   [align=left] {{\fontfamily{pcr}\selectfont {\small object file}}};
+% Text Node
+\draw (370.67,94) node   [align=left] {{\small {\fontfamily{pcr}\selectfont executable}}};
+
+
+\end{tikzpicture}
+
+
+
+}
+
+\subsubsection{Preproccessor Defined Symbols}
+
+There are a few symbols that C will recognize and replace with text during preprocessing. For example, typing \texttt{\_\_DATE\_\_} in your C file will cause C to replace it with the date of compilation when you actually compile your program. Here's a list of these macros. (I've decided to exclude \texttt{\_\_STDC\_\_} only because we basically never see a use for it during 216.
+
+\begin{itemize}
+	\item \textbf{\texttt{\_\_FILE\_\_}} $\rightarrow$ filename of the source file that this macro is in.
+	\item \textbf{\texttt{\_\_LINE\_\_}} $\rightarrow$ the line number that this macro is typed on. I've used this for debugging before- for example, let's say you're using a bunch of print statements throughout your code to see where it got to before a segfault. Instead of printing something like 'got here' for every statement, maybe write something where you \texttt{printf} something with \texttt{\_\_LINE\_\_} in it, then copy paste that statement into your code a bunch of times. It's a super easy way to see how far you get.
+	\item \textbf{\texttt{\_\_DATE\_\_}} $\rightarrow$ the date of compilation. Not much to say here, it's more gimmicky than anything.
+	\item \textbf{\texttt{\_\_TIME\_\_}} $\rightarrow$ same as above, except it's the time of compilation.
+\end{itemize}
+
+I would think of these like your \texttt{\#define} keywords. In this case, C is just looking for these particular strings, and replacing them with their corresponding replacements. These are useful mainly only for niche cases, like if you wanted your code to print out when it was compiled.\newline
+
+Also, you've probably seen this a bunch by now, but \texttt{\#define} is basically just telling the C compiler to find all occurrences of one thing, and replace it with another thing. For example, doing something like \texttt{\#define MAX\_CHAR\_AMT 80} would cause the C compiler to find every occurrence of the string '\texttt{MAX\_CHAR\_AMT}' in your code and replace it with \texttt{80}. In that sense, the most prominent use for this in 216 is to define maximum size limits. If you need a reference, most projects will have these limits defined either in the base C files or the header files that they provide.
+
+\subsubsection{Conditional Compilation}
+
+Conditional compilation is an interesting topic, and I think the slides explain it pretty well. However, I think there are simpler examples than what's provided in the slides that'll help us understand it on a basic level.\newline
+
+I suggest taking a look at \texttt{\href{https://www.programmingsimplified.com/c/tutorial/conditional-compilation}{https://www.programmingsimplified.com/c/tutorial/conditional-compilation}} for a really simple example that'll get you started.\newline
+
+The main use of conditional compilation is basically that- if code should be written the same (i.e. the same C file) on two systems, but should be compiled differently based on other files that influence it or the system it's being compiled on, then conditional compilation is what you need. We don't see too much of this stuff in your projects, but it's good to know in case it pops up on an exam.
+
+\subsubsection{File Inclusion}
+
+File inclusion is sort of a self explanatory topic. Although we go over it formally in discussion and the preprocessor slides, I think the best way to understand this is to see real world examples. Luckily, you've done a few projects so far, and they're essentially working examples of how file inclusion should be done in C. For this topic, I invite you to take a look at your projects and see where header files are included, if there's ever multiple header files included, and, if you really want to explore, feel free to go back and mess with old projects. Change header files around, try to make a C file include multiple header files, change the order in which they're included, etc. You've been working with file inclusion this whole time, so feel free to experiment a bit with it and really get familiar. That, plus the theoretical background that the slides provide should be all you need.
+
+
+
+
 
 
 \section{Closing Thoughts}
