@@ -1012,11 +1012,30 @@ Assuming that public test files are named as they usually are in this class, and
 
 This would search for the keyword \texttt{get\_classroom\_number()} in every file that started with 'public', which is exactly what we want. (Remember your UNIX special characters!). Additionally, here's one extra little trick that might make grepping a little bit easier- if you want to see the line numbers that your searches actually appear on, go ahead and use the \texttt{-n} flag when you run grep. The previous example would then look like this:\newline
 
-\texttt{grep -n get\_classroom\_number() public*}\newline
+\texttt{grep -n get\_classroom\_number() public*}
 
 \subsection{Memcpy, Memmove, and Memset}
 
-% TODO add this section
+In C, we sometimes want to simply just manipulate blocks of memory. Although we were previously able to do this with strings, we can also do this at a much less abstracted level, and just mess with the memory itself.\newline
+
+I suggest that you follow along using the lab example named \texttt{mem\_cpy\_set.c} located at: \newline \texttt{216public/labs/Week5/lab 1}
+
+\begin{itemize}
+	\item \textbf{\texttt{void *memcpy(void *dest, const void *src, size\_t n)}} - memcpy is a function that simply copies memory from one block to another, and that's the gist of it. The two main uses we have for this are to (1) copy strings from one location to another (but for this case, you're probably better off using strcpy or strncpy) and (2) to copy structs from one location to another. As you can see, the function asks for an unsigned integer 'n', which we can usually mark off as the \texttt{sizeof(struct\_you\_want\_to\_copy)}.
+	\item \textbf{\texttt{void *memmove(void *dest, const void *src, size\_t n)}} - This one is basically the same as memcpy, but you'll want to use this when the memory you need to copy \textbf{to} overlaps with the memory you want to copy \textbf{from}.
+	\item \textbf{\texttt{void *memset(void *str, int c, size\_t n)}} - This is a pretty niche command, and the gist of it is this. It'll take the block of memory that you specify, and set it all to a certain value that you specify. I can see this being useful if you wanted to set all the values in a contiguous array to the number '1' as a default value, or something like that.\newline
+
+\end{itemize}
+
+As a final side note, you can get more information on all three of these functions by using \texttt{man}. However, you will need to provide the '3' flag when you invoke the man command, so your commands would look like the following.
+
+\begin{itemize}
+	\item \texttt{man 3 memcpy}
+	\item \texttt{man 3 memset}
+	\item \texttt{man 3 memmove}
+\end{itemize}
+
+
 
 \section{Closing Thoughts}
 
