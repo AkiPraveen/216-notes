@@ -11,4 +11,6 @@ Created as a supplementary resource- a compiled set of my notes and insights fro
 * Week 4
 * Week 5
 * Week 6
+* Week 7
 
+Due to the university closure and temporary migration to online classes, I will be updating this repository more frequently for the convenience of the students.
