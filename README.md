@@ -9,5 +9,6 @@ Created as a supplementary resource- a compiled set of my notes and insights fro
 * Week 2
 * Week 3
 * Week 4
-* Week 5 (In progress)
+* Week 5
+* Week 6
 
