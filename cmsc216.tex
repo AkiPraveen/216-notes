@@ -1450,10 +1450,155 @@ So that's how we deal with compilation in makefiles. I invite you to take a look
 
 For more nitty-gritty details on \texttt{make}, definitely take a look at the slides, they have the information you need. However, more or less, exams will probably ask you to either cook up a makefile on your own or decide what will be recompiled if you change some files. I want to make sure that you get the basic concept of all this, so as long as you do what I detail above and remember some of the key points from the slides, you should be in very good shape for exams.\newline
 
+\subsection{Struct Abstraction}
+
+For this section, we'll be talking about Struct Abstraction. For reference, this material can be found at:\newline 
+
+\texttt{216public/labs/Week7/lab2/struct\_abstraction} \newline
+
+I suggest you take a look at the README like we did in discussion, but to get a broad overview of this concept, I want to add a little of my own insight. \newline
+
+Java babied us a lot with its object oriented features and other conveniences, but you'll find that C is a lot less scaffolded. In other words, C does not provide us with the same conveniences that Java does. Struct Abstraction is a fairly niche topic, but it's essentially a reminder to us that we can \textit{sort of} emulate an object oriented feature of Java by naming a struct, yet hiding its implementation. Personally, I haven't found a particular use for it in my 216 projects, but I think it's good knowledge to have. Take a look at the README and work through the example like we did in class, but other than that, make sure you know the gist of it: It's a neat little trick in C that allows us to kind of emulate object oriented behavior by 'hiding' the implementation of a struct.
+
+\subsection{Dynamic Memory Allocation (Review)}
+
+Dynamic memory allocation is one of the most important topics in C, and usually one of the hardest for students to understand. If you haven't fully understood this yet, I would highly suggest either referring back to your lecture notes for the subject, watching older 216 lecture videos on the topic online, or looking at reference material from elsewhere. This will only serve as a quick review + some of my extra insight.\newline
+
+For this section, we'll be looking at the reference material found in the following location:\newline
+
+\texttt{public/labs/Week7/lab2}
+
+\subsubsection{Malloc() vs. Calloc()}
+
+I remember this came up as an exam question during my year, so I think this is an important distinction to remember. When you're looking at allocating memory in C, there are two ways to ask C's memory manager for the space that you need. I like to think of this with the hotel room analogy. When you use \texttt{malloc()}, it's like you've arrived at a hotel and ask the clerk to give you a room (and of course, for the sake of the analogy, let's say you provided a size for the room). Nevermind if it's clean or not, and you don't care what the previous guests left in the room. You just want to know that you have the room, and you'll take care of cleaning it and setting your friends up in it later. \texttt{malloc()} is a function that gives you the memory you're looking for, but it doesn't bother cleaning it out for you- the values at the pointer that \texttt{malloc()} returns can be just about anything- so it's a solid idea not to dereference whatever's there. Now if you use \texttt{calloc()}, that's a different story. That's like asking the clerk for a room, but also adding, "Hey, can you make sure it's cleaned spotless for me?". That way, everything in that room is set to a nice default value and is nice and ready for you to look at- no need to clean it. For example, using \texttt{malloc()} for a string and printing it is a terrible idea, but using \texttt{calloc()} for a string and printing it will work totally fine, as the latter sets the memory to default values.
+
+\subsubsection{Two Pointers to the Same Memory}
+
+C's memory manager isn't smart, but it isn't stupid. If you have two pointers to the same memory that you allocated, using \texttt{free()} to return that chunk of memory to the C memory manager will totally work. Here's an example.\newline
+
+{
+\centering
+
+
+\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+
+\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+%uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
+
+%Shape: Rectangle [id:dp7660242978805989] 
+\draw   (152.5,144.5) -- (222.5,144.5) -- (222.5,184.5) -- (152.5,184.5) -- cycle ;
+%Shape: Rectangle [id:dp9835474491940359] 
+\draw   (327.5,68) -- (397.5,68) -- (397.5,108) -- (327.5,108) -- cycle ;
+%Shape: Rectangle [id:dp6382246899126394] 
+\draw   (397.5,68) -- (467.5,68) -- (467.5,108) -- (397.5,108) -- cycle ;
+%Shape: Rectangle [id:dp40751687076886434] 
+\draw   (467.5,68) -- (537.5,68) -- (537.5,108) -- (467.5,108) -- cycle ;
+%Shape: Rectangle [id:dp1956486484356338] 
+\draw   (537.5,68) -- (607.5,68) -- (607.5,108) -- (537.5,108) -- cycle ;
+%Straight Lines [id:da2803570019045192] 
+\draw    (187.5,164.5) -- (326.25,88.21) ;
+\draw [shift={(328,87.25)}, rotate = 511.2] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+
+% Text Node
+\draw (116,162.5) node   [align=left] {{\fontfamily{pcr}\selectfont ptr\_1}};
+% Text Node
+\draw (453,49) node   [align=left] {Memory you received from {\fontfamily{pcr}\selectfont malloc()}};
+
+
+\end{tikzpicture}
+}
+
+Here, let's say we used \texttt{malloc()} to grab some memory for \texttt{ptr\_1}. Nevermind what the type of it is, that isn't important.\newline
+
+Now, let's say we set a new pointer \texttt{ptr\_2} equal to \texttt{ptr\_1}. In other words, we now have two pointers pointing to this memory that you've malloc'd.\newline
+
+{
+\centering
+
+
+\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+
+\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+%uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
+
+%Shape: Rectangle [id:dp7660242978805989] 
+\draw   (152.5,144.5) -- (222.5,144.5) -- (222.5,184.5) -- (152.5,184.5) -- cycle ;
+%Shape: Rectangle [id:dp9835474491940359] 
+\draw   (327.5,68) -- (397.5,68) -- (397.5,108) -- (327.5,108) -- cycle ;
+%Shape: Rectangle [id:dp6382246899126394] 
+\draw   (397.5,68) -- (467.5,68) -- (467.5,108) -- (397.5,108) -- cycle ;
+%Shape: Rectangle [id:dp40751687076886434] 
+\draw   (467.5,68) -- (537.5,68) -- (537.5,108) -- (467.5,108) -- cycle ;
+%Shape: Rectangle [id:dp1956486484356338] 
+\draw   (537.5,68) -- (607.5,68) -- (607.5,108) -- (537.5,108) -- cycle ;
+%Straight Lines [id:da2803570019045192] 
+\draw    (187.5,164.5) -- (326.25,88.21) ;
+\draw [shift={(328,87.25)}, rotate = 511.2] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Shape: Rectangle [id:dp8693066240275549] 
+\draw   (134,22.5) -- (204,22.5) -- (204,62.5) -- (134,62.5) -- cycle ;
+%Straight Lines [id:da23910938451416597] 
+\draw    (169,42.5) -- (326.07,86.71) ;
+\draw [shift={(328,87.25)}, rotate = 195.72] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+
+% Text Node
+\draw (116,162.5) node   [align=left] {{\fontfamily{pcr}\selectfont ptr\_1}};
+% Text Node
+\draw (453,49) node   [align=left] {memory you received from {\fontfamily{pcr}\selectfont malloc()}};
+% Text Node
+\draw (103,37.5) node   [align=left] {{\fontfamily{pcr}\selectfont ptr\_2}};
+
+
+\end{tikzpicture}
+
+}
+
+Now, if we want to return this memory back to the memory manager, we can do that very easily by doing either of the following:\newline
+
+\texttt{free(ptr\_2);} or \texttt{free(ptr\_1);}\newline
+
+The reason that this works is that, as far as C is concerned, the actual pointer that you have to the memory that it gave you doesn't matter. At the end of the day, \texttt{free()} takes in a memory address, and C will check to see if it's given you memory at that address. If it decides that it has indeed given you memory at that address, it'll take it back. That's why calling \texttt{free()} on either \texttt{ptr\_1} or \texttt{ptr\_2} will work just fine.
+
+\subsubsection{Malloc with Structs}
+
+One more key point that I want to touch on is that you'll want to use \texttt{sizeof} correctly when allocating memory for structs. When you're allocating memory for a struct, always make sure to allocate memory for the size of the \textbf{struct}, not the size of the \textbf{pointer} to the struct. This is a common mistake, and usually results in segfaults.\newline
+
+\subsubsection{Freeing in the Reverse Order you Malloc}
+
+Here's a good rule of thumb that I like to follow for projects. Whenever you're allocating memory, you'll usually go in a top-down manner. If you have a struct like the one below:\newline
+
+\begin{lstlisting}[language=C]
+ typedef struct whale {
+   char *name;
+   int *weight;
+} Whale;
+\end{lstlisting}
+
+You'll want to allocate memory for it in order. First, allocate memory for the \texttt{whale} struct itself. Then, remember that the whale struct is only big enough to contain two pointers. If we want those pointers to actually \textbf{point} to anything, we're going to have to allocate that memory too. Thus, we allocate memory for the string \texttt{name} and the int \texttt{weight} as well.\newline
+
+Now, we've got all the memory space we need. Great. But how would we give it back to the program when we're done? Again, follow this rule of thumb: \textbf{free in the reverse order that you malloc}. If you allocated memory for the whale first, then string, then int, go ahead and free the int, the string, then finally the whale. If you don't follow this order and decide to free the whale first, you've effectively lost access to the pointers contained in the whale, and now you won't be able to free that memory. That results in a memory leak, and we definitely don't want that. So again, if you used malloc to allocate memory for \textbf{A}, \textbf{B}, then \textbf{C}, a great rule of thumb is to free \textbf{C}, then \textbf{B}, then finally, \textbf{A}.
+
+Again, these are just a few tips and tricks regarding dynamic memory allocation, but this is an important concept to fully understand in 216. I can't stress the importance of referring to other notes or looking at old lectures until you truly understand dynamic memory allocation.\newline
+
+\subsubsection{Using Valgrind to Find Memory Leaks}
+
+The memory leaks I mentioned above are silent killers- all it takes are a few badly ordered \texttt{free()} function calls, and you've got yourself a memory leak. A great way to check for these quickly is to run \texttt{valgrind}.\newline
+
+It's actually really simple to do so. If you want to check if your executable has any memory leaks, go ahead and use \texttt{make} or \texttt{gcc} to compile it into your executable or an \texttt{a.out} file, then run the following:\newline
+
+\texttt{valgrind a.out} or \texttt{valgrind your\_executable}\newline
+
+If all goes well, \texttt{valgrind} should let you know that 'all blocks were freed'. If not, it will complain and let you know that some pointers were not freed. From there, you can go ahead and examine your code to see where you were making the mistake.\newline
+
+Here's an excellent quick and basic tutorial for using valgrind to check for memory leaks that I used when I was taking 216. If you want further reference, I encourage you to check it out.\newline
+
+\texttt{\href{http://cs.ecs.baylor.edu/~donahoo/tools/valgrind/}{http://cs.ecs.baylor.edu/~donahoo/tools/valgrind/}}
+
 
 
 \section{Closing Thoughts}
 
-This document will be updated frequently as we progress through CMSC216. Please send errors to \texttt{apraveen@cs.umd.edu}
+This document will be updated frequently as we progress through CMSC216. Please send errors to \texttt{apraveen@cs.umd.edu}\newline
+
+\textbf{New as of Mar. 2020: Due to the migration to online classes for the duration of the COVID-19 University Closure, this document will be updated more frequently for the convenience of students.}
 
 \end{document}
