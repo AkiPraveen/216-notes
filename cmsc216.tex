@@ -1041,6 +1041,8 @@ This week is a quiz week, so we held open office hours during discussion and ans
 
 \subsection{Preprocessor}
 
+To follow along with these notes, I'd recommend taking a look at '\texttt{PreprocessorI.pdf (Lab)} from the Week 6 section on the 'Schedule' page of the course website.\newline
+
 Here, we'll be talking a little bit about C's preprocessing and compiling. Preprocessing is essentially the stuff that C provides for your code right before it compiles, e.g. replacing macros with their appropriate text values.
 
 \subsubsection{Compiling a C Program}
@@ -1117,8 +1119,336 @@ The main use of conditional compilation is basically that- if code should be wri
 
 File inclusion is sort of a self explanatory topic. Although we go over it formally in discussion and the preprocessor slides, I think the best way to understand this is to see real world examples. Luckily, you've done a few projects so far, and they're essentially working examples of how file inclusion should be done in C. For this topic, I invite you to take a look at your projects and see where header files are included, if there's ever multiple header files included, and, if you really want to explore, feel free to go back and mess with old projects. Change header files around, try to make a C file include multiple header files, change the order in which they're included, etc. You've been working with file inclusion this whole time, so feel free to experiment a bit with it and really get familiar. That, plus the theoretical background that the slides provide should be all you need.
 
+\section{Week 7}
+
+This week, we're going over new things after the Exam. We'll talk a little about Make, which allows us to easily compile our projects in C, Struct Abstraction, which is about as far as C goes in terms of emulating object oriented features, and dynamic memory allocation.
+
+\subsection{Make}
+
+To follow along with these notes, I'd recommend taking a look at '\texttt{Make.pdf (Lab)} from the Week 7 section on the 'Schedule' page of the course website.\newline
+
+Before, if you wanted to compile a bunch of files at once, you'd just toss them all into one gcc command, like so:\newline
+
+\texttt{gcc hashtable.c public01.c}\newline
+
+Now this is fine, but as you can imagine, if you have a much larger C project with plenty of files (some depending on others, some not depending on others), you might run into some issues if you have to manually \texttt{gcc} everything each time you want to run your code. Luckily, C's got a solution for you!\newline
+
+\subsubsection{Compiling into Object Code First}
+
+Just a little note before we get into it- we've been skipping a step in terms of how code gets compiled. Just like I talked about above,  in the Preprocessor section, C gets compiled from source code to an object file to an executable, and so far, we've just been compiling straight from source code to executable. In order to fully understand \texttt{make}, we're going to want to note that we will now be compiling first into object files, then into source code.
+
+\subsubsection{Dependencies}
+
+First thing you need to know about \texttt{make}- it's all about dependencies. Let's say we had some C files, and for this example, let's go ahead and take a look at the example that they provide in the slides.\newline
+
+{
+\centering
 
 
+\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+
+\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+%uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
+
+%Shape: Rectangle [id:dp04584351351591953] 
+\draw   (300.5,51) -- (379.5,51) -- (379.5,79.5) -- (300.5,79.5) -- cycle ;
+%Shape: Rectangle [id:dp869537413731065] 
+\draw   (222.5,121) -- (301.5,121) -- (301.5,149.5) -- (222.5,149.5) -- cycle ;
+%Shape: Rectangle [id:dp09744507127214364] 
+\draw   (380.5,120.5) -- (459.5,120.5) -- (459.5,149) -- (380.5,149) -- cycle ;
+%Shape: Rectangle [id:dp6441175322103412] 
+\draw   (300.5,172) -- (379.5,172) -- (379.5,200.5) -- (300.5,200.5) -- cycle ;
+%Shape: Rectangle [id:dp970334445840234] 
+\draw   (161.5,169.5) -- (240.5,169.5) -- (240.5,198) -- (161.5,198) -- cycle ;
+%Shape: Rectangle [id:dp4273912861487811] 
+\draw   (441,169.5) -- (520,169.5) -- (520,198) -- (441,198) -- cycle ;
+%Straight Lines [id:da5700845683815001] 
+\draw    (338,79.75) -- (265.25,120.28) ;
+\draw [shift={(263.5,121.25)}, rotate = 330.88] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da1587431355483161] 
+\draw    (338,79.75) -- (421.69,119.39) ;
+\draw [shift={(423.5,120.25)}, rotate = 205.35] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da7368979653415088] 
+\draw    (262,150.25) -- (205.4,168.63) ;
+\draw [shift={(203.5,169.25)}, rotate = 342.01] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da015222657466875456] 
+\draw    (262,150.25) -- (339.57,171.72) ;
+\draw [shift={(341.5,172.25)}, rotate = 195.47] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da20417970212364012] 
+\draw    (420.5,149.25) -- (343.42,171.69) ;
+\draw [shift={(341.5,172.25)}, rotate = 343.77] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da3319626117155393] 
+\draw    (420.5,149.25) -- (478.09,167.64) ;
+\draw [shift={(480,168.25)}, rotate = 197.71] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+
+% Text Node
+\draw (340,65.25) node   [align=left] {{\fontfamily{pcr}\selectfont publicX}};
+% Text Node
+\draw (262,135.25) node   [align=left] {{\fontfamily{pcr}\selectfont publicX.o}};
+% Text Node
+\draw (420,134.75) node   [align=left] {{\fontfamily{pcr}\selectfont puzzles.o}};
+% Text Node
+\draw (340,186.25) node   [align=left] {{\fontfamily{pcr}\selectfont puzzles.h}};
+% Text Node
+\draw (480.5,183.75) node   [align=left] {{\fontfamily{pcr}\selectfont puzzles.c}};
+% Text Node
+\draw (203.5,184.25) node   [align=left] {{\fontfamily{pcr}\selectfont publicX.c}};
+
+
+\end{tikzpicture}
+
+
+}
+
+\subsubsection{A Broad Overview of Public Tests with Make}
+
+As you can see, we have a pretty solid dependency tree here. Main takeaways: C files (the source files) are generally at the bottom of the tree, and they (combined with H files) compile into O files. To reiterate, (C) source files combine with (H) header files as they're compiled, and they become (O) object files. These object files are then compiled into one big executable, so you can run it very easily. The reason I like this provided example so much is because it's very similar to the public tests that you're provided in your projects. You've got \texttt{puzzles.c}, which we can say is like the file that you'll usually fill out and write yourself. You've got \texttt{puzzles.h}, which we can assume is some file full of constants and function prototypes that was probably provided to you when you copied the project over from \texttt{216public}, and finally, you've got \texttt{publicX.c}, which is the public test you're trying to run. In this case, in order for \texttt{publicX} to be created, the \texttt{make} utility has to combine the data from \texttt{publicX.c}, \texttt{puzzles.h}, and \texttt{puzzles.c}.\newline
+
+Let's go over the questions provided in the slides.\newline
+
+\begin{itemize}
+	\item \textbf{What needs to be compiled if \texttt{publicX.c} is changed?}\newline
+		
+		
+
+\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+
+\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+%uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
+
+%Shape: Rectangle [id:dp04584351351591953] 
+\draw  [color={rgb, 255:red, 0; green, 0; blue, 0 }  ,draw opacity=1 ] (300.5,51) -- (379.5,51) -- (379.5,79.5) -- (300.5,79.5) -- cycle ;
+%Shape: Rectangle [id:dp869537413731065] 
+\draw  [color={rgb, 255:red, 255; green, 0; blue, 0 }  ,draw opacity=1 ] (222.5,121) -- (301.5,121) -- (301.5,149.5) -- (222.5,149.5) -- cycle ;
+%Shape: Rectangle [id:dp09744507127214364] 
+\draw   (380.5,120.5) -- (459.5,120.5) -- (459.5,149) -- (380.5,149) -- cycle ;
+%Shape: Rectangle [id:dp6441175322103412] 
+\draw   (300.5,172) -- (379.5,172) -- (379.5,200.5) -- (300.5,200.5) -- cycle ;
+%Shape: Rectangle [id:dp970334445840234] 
+\draw  [color={rgb, 255:red, 255; green, 0; blue, 0 }  ,draw opacity=1 ] (161.5,169.5) -- (240.5,169.5) -- (240.5,198) -- (161.5,198) -- cycle ;
+%Shape: Rectangle [id:dp4273912861487811] 
+\draw   (441,169.5) -- (520,169.5) -- (520,198) -- (441,198) -- cycle ;
+%Straight Lines [id:da5700845683815001] 
+\draw [color={rgb, 255:red, 0; green, 0; blue, 0 }  ,draw opacity=1 ]   (338,79.75) -- (265.25,120.28) ;
+\draw [shift={(263.5,121.25)}, rotate = 330.88] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ,draw opacity=1 ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da1587431355483161] 
+\draw    (338,79.75) -- (421.69,119.39) ;
+\draw [shift={(423.5,120.25)}, rotate = 205.35] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da7368979653415088] 
+\draw [color={rgb, 255:red, 255; green, 0; blue, 0 }  ,draw opacity=1 ]   (262,150.25) -- (205.4,168.63) ;
+\draw [shift={(203.5,169.25)}, rotate = 342.01] [color={rgb, 255:red, 255; green, 0; blue, 0 }  ,draw opacity=1 ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da015222657466875456] 
+\draw    (262,150.25) -- (339.57,171.72) ;
+\draw [shift={(341.5,172.25)}, rotate = 195.47] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da20417970212364012] 
+\draw    (420.5,149.25) -- (343.42,171.69) ;
+\draw [shift={(341.5,172.25)}, rotate = 343.77] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da3319626117155393] 
+\draw    (420.5,149.25) -- (478.09,167.64) ;
+\draw [shift={(480,168.25)}, rotate = 197.71] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+
+% Text Node
+\draw (340,65.25) node   [align=left] {{\fontfamily{pcr}\selectfont publicX}};
+% Text Node
+\draw (262,135.25) node   [align=left] {{\fontfamily{pcr}\selectfont publicX.o}};
+% Text Node
+\draw (420,134.75) node   [align=left] {{\fontfamily{pcr}\selectfont puzzles.o}};
+% Text Node
+\draw (340,186.25) node   [align=left] {{\fontfamily{pcr}\selectfont puzzles.h}};
+% Text Node
+\draw (480.5,183.75) node   [align=left] {{\fontfamily{pcr}\selectfont puzzles.c}};
+% Text Node
+\draw (201,183.75) node   [align=left] {{\fontfamily{pcr}\selectfont publicX.c}};
+
+
+\end{tikzpicture}\newline
+
+	Well, since we're changing the \texttt{.c} source file, we can safely assume that the object file that it will eventually become needs to be recompiled, so let's travel up one node on the dependency tree and mark that as 'need to be recompiled'. However, it doesn't stop there. \newline
+	
+	
+
+\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+
+\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+%uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
+
+%Shape: Rectangle [id:dp04584351351591953] 
+\draw  [color={rgb, 255:red, 255; green, 0; blue, 0 }  ,draw opacity=1 ] (300.5,51) -- (379.5,51) -- (379.5,79.5) -- (300.5,79.5) -- cycle ;
+%Shape: Rectangle [id:dp869537413731065] 
+\draw  [color={rgb, 255:red, 255; green, 0; blue, 0 }  ,draw opacity=1 ] (222.5,121) -- (301.5,121) -- (301.5,149.5) -- (222.5,149.5) -- cycle ;
+%Shape: Rectangle [id:dp09744507127214364] 
+\draw   (380.5,120.5) -- (459.5,120.5) -- (459.5,149) -- (380.5,149) -- cycle ;
+%Shape: Rectangle [id:dp6441175322103412] 
+\draw   (300.5,172) -- (379.5,172) -- (379.5,200.5) -- (300.5,200.5) -- cycle ;
+%Shape: Rectangle [id:dp970334445840234] 
+\draw  [color={rgb, 255:red, 255; green, 0; blue, 0 }  ,draw opacity=1 ] (161.5,169.5) -- (240.5,169.5) -- (240.5,198) -- (161.5,198) -- cycle ;
+%Shape: Rectangle [id:dp4273912861487811] 
+\draw   (441,169.5) -- (520,169.5) -- (520,198) -- (441,198) -- cycle ;
+%Straight Lines [id:da5700845683815001] 
+\draw [color={rgb, 255:red, 255; green, 0; blue, 0 }  ,draw opacity=1 ]   (338,79.75) -- (265.25,120.28) ;
+\draw [shift={(263.5,121.25)}, rotate = 330.88] [color={rgb, 255:red, 255; green, 0; blue, 0 }  ,draw opacity=1 ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da1587431355483161] 
+\draw    (338,79.75) -- (421.69,119.39) ;
+\draw [shift={(423.5,120.25)}, rotate = 205.35] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da7368979653415088] 
+\draw [color={rgb, 255:red, 255; green, 0; blue, 0 }  ,draw opacity=1 ]   (262,150.25) -- (205.4,168.63) ;
+\draw [shift={(203.5,169.25)}, rotate = 342.01] [color={rgb, 255:red, 255; green, 0; blue, 0 }  ,draw opacity=1 ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da015222657466875456] 
+\draw    (262,150.25) -- (339.57,171.72) ;
+\draw [shift={(341.5,172.25)}, rotate = 195.47] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da20417970212364012] 
+\draw    (420.5,149.25) -- (343.42,171.69) ;
+\draw [shift={(341.5,172.25)}, rotate = 343.77] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da3319626117155393] 
+\draw    (420.5,149.25) -- (478.09,167.64) ;
+\draw [shift={(480,168.25)}, rotate = 197.71] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+
+% Text Node
+\draw (340,65.25) node   [align=left] {{\fontfamily{pcr}\selectfont publicX}};
+% Text Node
+\draw (262,135.25) node   [align=left] {{\fontfamily{pcr}\selectfont publicX.o}};
+% Text Node
+\draw (420,134.75) node   [align=left] {{\fontfamily{pcr}\selectfont puzzles.o}};
+% Text Node
+\draw (340,186.25) node   [align=left] {{\fontfamily{pcr}\selectfont puzzles.h}};
+% Text Node
+\draw (480.5,183.75) node   [align=left] {{\fontfamily{pcr}\selectfont puzzles.c}};
+% Text Node
+\draw (201,183.75) node   [align=left] {{\fontfamily{pcr}\selectfont publicX.c}};
+
+
+\end{tikzpicture}\newline
+
+Since we recompiled the object file that needs to ultimately be compiled into \texttt{publicX}, we can also assume that it needs to be recompiled as well.\newline
+
+At this point, we're done. We've done all the recompiling that we need to for this particular case, and since we haven't changed any of the dependencies for \texttt{puzzles.o}, we can see that it wasn't affected, and therefore, does not need to be recompiled. Let's solve the other questions in a similar manner.\newline
+
+	\item \textbf{What needs to be compiled if \texttt{puzzles.c} is changed?}\newline
+	
+	This actually ends up working the same way as the previous example, just on a different side of the tree. Take a look.\newline
+	
+	
+
+\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+
+\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+%uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
+
+%Shape: Rectangle [id:dp04584351351591953] 
+\draw  [color={rgb, 255:red, 255; green, 0; blue, 0 }  ,draw opacity=1 ] (300.5,51) -- (379.5,51) -- (379.5,79.5) -- (300.5,79.5) -- cycle ;
+%Shape: Rectangle [id:dp869537413731065] 
+\draw  [color={rgb, 255:red, 0; green, 0; blue, 0 }  ,draw opacity=1 ] (222.5,121) -- (301.5,121) -- (301.5,149.5) -- (222.5,149.5) -- cycle ;
+%Shape: Rectangle [id:dp09744507127214364] 
+\draw  [color={rgb, 255:red, 255; green, 0; blue, 0 }  ,draw opacity=1 ] (380.5,120.5) -- (459.5,120.5) -- (459.5,149) -- (380.5,149) -- cycle ;
+%Shape: Rectangle [id:dp6441175322103412] 
+\draw   (300.5,172) -- (379.5,172) -- (379.5,200.5) -- (300.5,200.5) -- cycle ;
+%Shape: Rectangle [id:dp970334445840234] 
+\draw  [color={rgb, 255:red, 0; green, 0; blue, 0 }  ,draw opacity=1 ] (161.5,169.5) -- (240.5,169.5) -- (240.5,198) -- (161.5,198) -- cycle ;
+%Shape: Rectangle [id:dp4273912861487811] 
+\draw  [color={rgb, 255:red, 255; green, 0; blue, 0 }  ,draw opacity=1 ] (441,169.5) -- (520,169.5) -- (520,198) -- (441,198) -- cycle ;
+%Straight Lines [id:da5700845683815001] 
+\draw [color={rgb, 255:red, 0; green, 0; blue, 0 }  ,draw opacity=1 ]   (338,79.75) -- (265.25,120.28) ;
+\draw [shift={(263.5,121.25)}, rotate = 330.88] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ,draw opacity=1 ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da1587431355483161] 
+\draw [color={rgb, 255:red, 255; green, 0; blue, 0 }  ,draw opacity=1 ]   (338,79.75) -- (421.69,119.39) ;
+\draw [shift={(423.5,120.25)}, rotate = 205.35] [color={rgb, 255:red, 255; green, 0; blue, 0 }  ,draw opacity=1 ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da7368979653415088] 
+\draw [color={rgb, 255:red, 0; green, 0; blue, 0 }  ,draw opacity=1 ]   (262,150.25) -- (205.4,168.63) ;
+\draw [shift={(203.5,169.25)}, rotate = 342.01] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ,draw opacity=1 ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da015222657466875456] 
+\draw    (262,150.25) -- (339.57,171.72) ;
+\draw [shift={(341.5,172.25)}, rotate = 195.47] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da20417970212364012] 
+\draw    (420.5,149.25) -- (343.42,171.69) ;
+\draw [shift={(341.5,172.25)}, rotate = 343.77] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da3319626117155393] 
+\draw [color={rgb, 255:red, 255; green, 0; blue, 0 }  ,draw opacity=1 ]   (420.5,149.25) -- (478.09,167.64) ;
+\draw [shift={(480,168.25)}, rotate = 197.71] [color={rgb, 255:red, 255; green, 0; blue, 0 }  ,draw opacity=1 ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+
+% Text Node
+\draw (340,65.25) node   [align=left] {{\fontfamily{pcr}\selectfont publicX}};
+% Text Node
+\draw (262,135.25) node   [align=left] {{\fontfamily{pcr}\selectfont publicX.o}};
+% Text Node
+\draw (420,134.75) node   [align=left] {{\fontfamily{pcr}\selectfont puzzles.o}};
+% Text Node
+\draw (340,186.25) node   [align=left] {{\fontfamily{pcr}\selectfont puzzles.h}};
+% Text Node
+\draw (480.5,183.75) node   [align=left] {{\fontfamily{pcr}\selectfont puzzles.c}};
+% Text Node
+\draw (201,183.75) node   [align=left] {{\fontfamily{pcr}\selectfont publicX.c}};
+
+
+\end{tikzpicture}\newline
+
+	Now you may notice that the recurring theme here is that \texttt{publicX} is always recompiled. This is fine! It's intentional! It only makes sense that if we're changing some of the source to what's going to end up in our final executable, our executable needs to be recompiled. The real issue that \texttt{make} is solving for us here is that \textbf{not everything on the lower limbs of the dependency tree needs to be recompiled if we change just one or two little source files}.
+	
+	\item \textbf{What needs to be compiled if \texttt{puzzles.h} is changed?}\newline
+	
+	Now this is the big one. If you'll notice on the tree, just about all of our object files and executable depend on \texttt{puzzles.h}. Let's confirm this by drawing and highlighting our dependency tree once again.\newline
+	
+	
+
+\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+
+\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+%uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
+
+%Shape: Rectangle [id:dp04584351351591953] 
+\draw  [color={rgb, 255:red, 255; green, 0; blue, 0 }  ,draw opacity=1 ] (300.5,51) -- (379.5,51) -- (379.5,79.5) -- (300.5,79.5) -- cycle ;
+%Shape: Rectangle [id:dp869537413731065] 
+\draw  [color={rgb, 255:red, 255; green, 0; blue, 0 }  ,draw opacity=1 ] (222.5,121) -- (301.5,121) -- (301.5,149.5) -- (222.5,149.5) -- cycle ;
+%Shape: Rectangle [id:dp09744507127214364] 
+\draw  [color={rgb, 255:red, 255; green, 0; blue, 0 }  ,draw opacity=1 ] (380.5,120.5) -- (459.5,120.5) -- (459.5,149) -- (380.5,149) -- cycle ;
+%Shape: Rectangle [id:dp6441175322103412] 
+\draw  [color={rgb, 255:red, 255; green, 0; blue, 0 }  ,draw opacity=1 ] (300.5,172) -- (379.5,172) -- (379.5,200.5) -- (300.5,200.5) -- cycle ;
+%Shape: Rectangle [id:dp970334445840234] 
+\draw  [color={rgb, 255:red, 0; green, 0; blue, 0 }  ,draw opacity=1 ] (161.5,169.5) -- (240.5,169.5) -- (240.5,198) -- (161.5,198) -- cycle ;
+%Shape: Rectangle [id:dp4273912861487811] 
+\draw  [color={rgb, 255:red, 0; green, 0; blue, 0 }  ,draw opacity=1 ] (441,169.5) -- (520,169.5) -- (520,198) -- (441,198) -- cycle ;
+%Straight Lines [id:da5700845683815001] 
+\draw [color={rgb, 255:red, 255; green, 0; blue, 0 }  ,draw opacity=1 ]   (338,79.75) -- (265.25,120.28) ;
+\draw [shift={(263.5,121.25)}, rotate = 330.88] [color={rgb, 255:red, 255; green, 0; blue, 0 }  ,draw opacity=1 ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da1587431355483161] 
+\draw [color={rgb, 255:red, 255; green, 0; blue, 0 }  ,draw opacity=1 ]   (338,79.75) -- (421.69,119.39) ;
+\draw [shift={(423.5,120.25)}, rotate = 205.35] [color={rgb, 255:red, 255; green, 0; blue, 0 }  ,draw opacity=1 ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da7368979653415088] 
+\draw [color={rgb, 255:red, 0; green, 0; blue, 0 }  ,draw opacity=1 ]   (262,150.25) -- (205.4,168.63) ;
+\draw [shift={(203.5,169.25)}, rotate = 342.01] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ,draw opacity=1 ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da015222657466875456] 
+\draw [color={rgb, 255:red, 255; green, 0; blue, 0 }  ,draw opacity=1 ]   (262,150.25) -- (339.57,171.72) ;
+\draw [shift={(341.5,172.25)}, rotate = 195.47] [color={rgb, 255:red, 255; green, 0; blue, 0 }  ,draw opacity=1 ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da20417970212364012] 
+\draw [color={rgb, 255:red, 255; green, 0; blue, 0 }  ,draw opacity=1 ]   (420.5,149.25) -- (343.42,171.69) ;
+\draw [shift={(341.5,172.25)}, rotate = 343.77] [color={rgb, 255:red, 255; green, 0; blue, 0 }  ,draw opacity=1 ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da3319626117155393] 
+\draw [color={rgb, 255:red, 0; green, 0; blue, 0 }  ,draw opacity=1 ]   (420.5,149.25) -- (478.09,167.64) ;
+\draw [shift={(480,168.25)}, rotate = 197.71] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ,draw opacity=1 ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+
+% Text Node
+\draw (340,65.25) node   [align=left] {{\fontfamily{pcr}\selectfont publicX}};
+% Text Node
+\draw (262,135.25) node   [align=left] {{\fontfamily{pcr}\selectfont publicX.o}};
+% Text Node
+\draw (420,134.75) node   [align=left] {{\fontfamily{pcr}\selectfont puzzles.o}};
+% Text Node
+\draw (340,186.25) node   [align=left] {{\fontfamily{pcr}\selectfont puzzles.h}};
+% Text Node
+\draw (480.5,183.75) node   [align=left] {{\fontfamily{pcr}\selectfont puzzles.c}};
+% Text Node
+\draw (201,183.75) node   [align=left] {{\fontfamily{pcr}\selectfont publicX.c}};
+
+
+\end{tikzpicture}\newline
+
+	Even though we didn't change any of the \texttt{.c} files, we changed one of the key nodes in our dependency tree, and for that, we have paid the price. Since both of our object files and ultimately our executable depends on these files, it looks like everything needs to be recompiled after our changes to \texttt{puzzles.h}.
+
+
+\end{itemize}
+
+So that's how we deal with compilation in makefiles. I invite you to take a look at your old projects that have makefiles in them and change some files around and keep running \texttt{make}. Try drawing your own dependency trees and seeing what recompiles when you make edits to different files. Once you do that enough, you should be ready for any \texttt{make}-related stuff that pops up on an exam.\newline
+
+For more nitty-gritty details on \texttt{make}, definitely take a look at the slides, they have the information you need. However, more or less, exams will probably ask you to either cook up a makefile on your own or decide what will be recompiled if you change some files. I want to make sure that you get the basic concept of all this, so as long as you do what I detail above and remember some of the key points from the slides, you should be in very good shape for exams.\newline
 
 
 
