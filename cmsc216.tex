@@ -434,8 +434,9 @@ Again, the code above is a great example of how you can leverage the integer-lik
 Switching between data types is pretty similar to how it was in Java, but here's a quick review of the stuff that matters. As you write your projects, you'll realize these things, but it's important to remember when it's a good idea to cast and when it isn't. Here are some general tips for you.\newline
 
 \begin{itemize}
-	\item \texttt{int}s are the smallest data type. If you need to describe something as a number and want to be as efficient as possible without getting fancy, the good old integer is the best way to go.
-	\item We can also cast in C, and it works almost the same was as it did in Java. Just remember, in Java we had the concept of wrapper classes that allowed us to do fancy things with certain data types. In C, we don't enjoy that luxury, so we are restricted to just basic data type casting. Below is an example.
+	\item \texttt There are a few ways to represent numbers in C. For relatively small numbers, \texttt{short}s are the way to go. If you want to represent a number that's a little bigger, use an \texttt{int}. The difference between these two on the systems that we'll be working with is that \texttt{int}s are twice the size of \texttt{short}s. (4 bytes vs. 2 bytes) If you want to represent a decimal number, You'll probably just want to use a \texttt{float}.
+	\item In my opinion, most projects that we'll deal with here can be accomplished perfectly well with just \texttt{int}s and \texttt{float}s.
+		\item We can also cast in C, and it works almost the same was as it did in Java. Just remember, in Java we had the concept of wrapper classes that allowed us to do fancy things with certain data types. In C, we don't enjoy that luxury, so we are restricted to just basic data type casting. Below is an example.
 	
 	
 	{\centering
