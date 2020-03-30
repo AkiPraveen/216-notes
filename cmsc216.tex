@@ -1594,6 +1594,286 @@ Here's an excellent quick and basic tutorial for using valgrind to check for mem
 
 \texttt{\href{http://cs.ecs.baylor.edu/~donahoo/tools/valgrind/}{http://cs.ecs.baylor.edu/~donahoo/tools/valgrind/}}
 
+\section{Week 8}
+
+\subsection{Sorting in C}
+
+Sometimes, be it for a project or on an exam, you'll need to quickly sort a list of items (or more specifically, an array of structs). \texttt{qsort()} is basically the quick and easy way to get that done in C. Let's take a look at the actual function definition found on the manpage.\newline
+
+\texttt{void qsort(void *base, size\_t nmemb, size\_t size, int(*compar)(const void *, const void *));}\newline
+
+As all manpage entries are, this may seem confusing at first, so let me break it down for you. \textbf{\texttt{base}} is referring to the array you want to sort in the first place. \textbf{\texttt{nmemb}} is the length of your array, so C knows the bounds of the memory space that it's playing around with. \textbf{\texttt{size}} is the size of the elements in said array, so C knows how big the chunks are that it needs to inevitably move around when it performs the sort. Finally, \textbf{\texttt{compar}} would be your comparator function. This is something I urge you to recall from 132- if you'll recall what a comparator function is, it essentially just tells you if one of the input parameters is 'greater' than the other. If you forgot what a comparator is, another great analog is the \texttt{.compareTo()} method in Java.\newline
+
+There's not much more to it than that. If you ever need your array sorted in C, unless you're explicitly told to write your own algorithm, don't reinvent the wheel. Go ahead and use the \texttt{qsort()} function.
+
+\subsection{The Root User}
+
+On every UNIX system, there is an all-powerful user (superuser) known as \texttt{root}. It's the first user created whenever you install a UNIX machine, and in a weirdly poetic way, all other users are born from it, making it the parent and creator of every other user on a machine.\newline
+
+All you need to know is that it is identified by the name \textbf{root}, it's known as a \textbf{superuser}, and for the purposes of this class, it can basically do anything and everything on the system. In other words, it's the most powerful user on a system.
+
+\subsection{Octal and File Permissions}
+
+Let's talk about file permissions on a UNIX system. Before we do that though, let's do a quick review of the octal number system. You should have the most experience with the decimal system, which uses the digits 0 through 9. Next up, as a CS major, you should be familiar with the binary system, which only uses digits 0 and 1. A key concept to remember is that you can also convert between both, and in that sense, you need to understand that you can represent \textit{any number} in binary or decimal representation, it'll just look different.\newline
+
+That being said, in order to set file permissions on a UNIX system, we take advantage of the \textbf{octal} number system. Just like the latin root \textbf{it} implies, there are 8 total digits that we'll be using, 0 through 7. Now that we understand octal, we can move on to talking about file permissions.\newline
+
+The easiest way to understand something like this is to have hands-on experience. Luckily, we have the grace system at our fingertips to try out stuff like this. Head to your \texttt{216} directory if you'd like to follow along. Go ahead and use \texttt{mkdir} to make a new folder so we can view its permissions. I'm going to name mine 'spaghetti'. If you use the command \texttt{ls -l}, the verbose \texttt{ls} command should show you the file permissions of everything in your current directory (including that of our new directory). Let's focus on what \texttt{ls -l} tells us about the directory for now.\newline
+
+{
+\centering
+
+
+\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+
+\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+%uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
+
+%Shape: Rectangle [id:dp42760139883003023] 
+\draw  [color={rgb, 255:red, 205; green, 205; blue, 205 }  ,draw opacity=1 ] (195.33,132.67) -- (686.33,132.67) -- (686.33,159.33) -- (195.33,159.33) -- cycle ;
+%Straight Lines [id:da027412161022483783] 
+\draw    (469.67,206.67) -- (442.17,168.29) ;
+\draw [shift={(441,166.67)}, rotate = 414.37] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Shape: Rectangle [id:dp36561122366047005] 
+\draw   (51,132) -- (64.33,132) -- (64.33,160.67) -- (51,160.67) -- cycle ;
+%Straight Lines [id:da43107557729764845] 
+\draw    (58.33,62) -- (57.69,126.67) ;
+\draw [shift={(57.67,128.67)}, rotate = 270.57] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Shape: Rectangle [id:dp11069137081996394] 
+\draw  [color={rgb, 255:red, 255; green, 0; blue, 0 }  ,draw opacity=1 ] (64.33,132) -- (97.67,132) -- (97.67,160.67) -- (64.33,160.67) -- cycle ;
+%Shape: Rectangle [id:dp5105405899279477] 
+\draw  [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,draw opacity=1 ] (97.67,132) -- (131,132) -- (131,160.67) -- (97.67,160.67) -- cycle ;
+%Shape: Rectangle [id:dp1241998432620336] 
+\draw  [color={rgb, 255:red, 80; green, 227; blue, 194 }  ,draw opacity=1 ] (131,132) -- (164.33,132) -- (164.33,160.67) -- (131,160.67) -- cycle ;
+%Straight Lines [id:da031602023639908494] 
+\draw    (81,232) -- (82.29,168.67) ;
+\draw [shift={(82.33,166.67)}, rotate = 451.17] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da3521048722446102] 
+\draw    (114.33,232) -- (115.63,168.67) ;
+\draw [shift={(115.67,166.67)}, rotate = 451.17] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da6073172586106217] 
+\draw    (147.67,232) -- (148.96,168.67) ;
+\draw [shift={(149,166.67)}, rotate = 451.17] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+
+% Text Node
+\draw (48.67,137.67) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont {\Large \textbf{drwxr-xr-x} 2 apraveen users 2.0K Mar 29 21:02 spaghetti}}};
+% Text Node
+\draw (346.67,214.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {We don't really care about this stuff\\for now, it's just more misc. info about\\the directory. (e.g. owner, filename, etc.)};
+% Text Node
+\draw (52.67,41.67) node [anchor=north west][inner sep=0.75pt]   [align=left] {A};
+% Text Node
+\draw (74.67,236.67) node [anchor=north west][inner sep=0.75pt]   [align=left] {B};
+% Text Node
+\draw (108,236.67) node [anchor=north west][inner sep=0.75pt]   [align=left] {C};
+% Text Node
+\draw (140.67,237.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {D};
+
+
+\end{tikzpicture}
+}
+
+Let's walk through the diagram that I've made out of the \texttt{ls -l} command above. There isn't any octal in the picture, but I encourage you to keep the idea in your mind for now. First and foremost, let's forget about the grayed out box for now. That's extra stuff that \texttt{ls -l} provides us with, but it won't be that useful when we're talking about file permissions.\newline
+
+\textbf{(A)} represents 'directory'. It's as simple as that- if this entity that we were analyzing using \texttt{ls -l} weren't a directory, we'd simply not see the 'd' there. \textbf{(B)}, the first 3 characters, represent permissions associated with the owner of the file. Since we see a \texttt{r}, \texttt{w}, and an \texttt{x}, we can see that the owner her permissions to \textit{read}, \textit{write}, and \textit{execute} whatever this entity is. In this case, it makes total sense; I made the folder just now, so I should be able to do whatever I want to it. \textbf{(C)}, the second 3 characters, are permissions associated with a group. For now, all you need to remember is that the group that we're referring to is the group to which this particular file/directory belongs. Finally, \textbf{(D)}, the last 3 characters, represent the permissions for everyone. Obviously, we have to be the most careful about these- e.g. if we accidentally give everyone \textit{write} access to all our files, we could have disastrous consequences.\newline
+
+In order to change these set permissions, we can use the \texttt{chmod} command in conjunction with a 3-digit octal parameter, such as \texttt{chmod 700 spaghetti}. Specifically, we would do something like this:\newline
+
+{
+\centering
+
+
+\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+
+\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+%uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
+
+%Shape: Rectangle [id:dp11069137081996394] 
+\draw  [color={rgb, 255:red, 255; green, 0; blue, 0 }  ,draw opacity=1 ] (152.33,105.33) -- (185.67,105.33) -- (185.67,134) -- (152.33,134) -- cycle ;
+%Shape: Rectangle [id:dp5105405899279477] 
+\draw  [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,draw opacity=1 ] (185.67,105.33) -- (219,105.33) -- (219,134) -- (185.67,134) -- cycle ;
+%Shape: Rectangle [id:dp1241998432620336] 
+\draw  [color={rgb, 255:red, 80; green, 227; blue, 194 }  ,draw opacity=1 ] (219,105.33) -- (252.33,105.33) -- (252.33,134) -- (219,134) -- cycle ;
+%Straight Lines [id:da3925814990937547] 
+\draw    (270.33,270.67) -- (170.2,136.93) ;
+\draw [shift={(169,135.33)}, rotate = 413.18] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da8411143149408029] 
+\draw    (271.67,226.67) -- (202.21,135.59) ;
+\draw [shift={(201,134)}, rotate = 412.66999999999996] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da2927838400275865] 
+\draw    (274.33,188) -- (238.82,137.63) ;
+\draw [shift={(237.67,136)}, rotate = 414.81] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+
+% Text Node
+\draw (162.67,112.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {\#};
+% Text Node
+\draw (196,111.67) node [anchor=north west][inner sep=0.75pt]   [align=left] {\#};
+% Text Node
+\draw (230,112.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {\#};
+% Text Node
+\draw (94.67,109.67) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont chmod}};
+% Text Node
+\draw (271.33,261.67) node [anchor=north west][inner sep=0.75pt]   [align=left] {Octal number representing the rwx permissions for owner};
+% Text Node
+\draw (274,219) node [anchor=north west][inner sep=0.75pt]   [align=left] {Octal number representing the rwx permissions for group};
+% Text Node
+\draw (276,179.67) node [anchor=north west][inner sep=0.75pt]   [align=left] {Octal number representing the rwx permissions for all};
+
+
+\end{tikzpicture}
+
+}
+
+Think back to when we talked about converting between number systems. Each number in the 3-digit octal parameter that we provide chmod actually represents a configuration for \texttt{rwx}. Specifically, it's that octal number converted to binary. In order to decode what each permission means, we'd convert each digit in the octal input parameter to its binary counterpart, then figure out which permissions were 'active' based on the presence of a 0 or a 1. For example, let's say we wanted to give our file read/write/execute access for everyone. We would execute \texttt{chmod 777 spaghetti}. Below is a diagram explaining the details.\newline
+
+{
+\centering
+
+
+\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+
+\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+%uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
+
+%Shape: Rectangle [id:dp11069137081996394] 
+\draw  [color={rgb, 255:red, 255; green, 0; blue, 0 }  ,draw opacity=1 ] (152.33,105.33) -- (185.67,105.33) -- (185.67,134) -- (152.33,134) -- cycle ;
+%Shape: Rectangle [id:dp5105405899279477] 
+\draw  [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,draw opacity=1 ] (185.67,105.33) -- (219,105.33) -- (219,134) -- (185.67,134) -- cycle ;
+%Shape: Rectangle [id:dp1241998432620336] 
+\draw  [color={rgb, 255:red, 80; green, 227; blue, 194 }  ,draw opacity=1 ] (219,105.33) -- (252.33,105.33) -- (252.33,134) -- (219,134) -- cycle ;
+%Straight Lines [id:da3925814990937547] 
+\draw    (270.33,270.67) -- (170.2,136.93) ;
+\draw [shift={(169,135.33)}, rotate = 413.18] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da8411143149408029] 
+\draw    (271.67,226.67) -- (202.21,135.59) ;
+\draw [shift={(201,134)}, rotate = 412.66999999999996] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da2927838400275865] 
+\draw    (274.33,188) -- (238.82,137.63) ;
+\draw [shift={(237.67,136)}, rotate = 414.81] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da8093183970331216] 
+\draw    (367,190) -- (391.67,190) ;
+\draw [shift={(393.67,190)}, rotate = 180] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da9695792273639827] 
+\draw    (366.33,230.67) -- (391,230.67) ;
+\draw [shift={(393,230.67)}, rotate = 180] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da1626297191907251] 
+\draw    (366.33,266) -- (391,266) ;
+\draw [shift={(393,266)}, rotate = 180] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+
+% Text Node
+\draw (162.67,112.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {7};
+% Text Node
+\draw (196.67,111.67) node [anchor=north west][inner sep=0.75pt]   [align=left] {7};
+% Text Node
+\draw (230,112.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {7};
+% Text Node
+\draw (94.67,109.67) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont chmod}};
+% Text Node
+\draw (275.33,179.67) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont 111} in Binary};
+% Text Node
+\draw (275.33,219) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont 111} in Binary};
+% Text Node
+\draw (274.67,257) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont 111} in Binary};
+% Text Node
+\draw (403.33,179.67) node [anchor=north west][inner sep=0.75pt]   [align=left] {rwx};
+% Text Node
+\draw (406,223.67) node [anchor=north west][inner sep=0.75pt]   [align=left] {rwx};
+% Text Node
+\draw (404.67,258.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {rwx};
+% Text Node
+\draw (264.67,110.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont spaghetti}};
+
+
+\end{tikzpicture}
+
+
+}
+
+Like I explained above, you'll notice that we're taking two basic steps. \newline
+
+\begin{itemize}
+	\item \texttt{First}, convert each octal input digit to binary.
+	\item \texttt{Second}, see where the ones and zeroes are in that binary output, and that'll tell you which of the rwx parameters are active.
+\end{itemize}
+
+For example, if you wanted rwx permissions for everyone like we set above, except this time, we'd only allow all users outside of the owner and the file group to only read the file, we'd edit the last digit in the octal input parameter to reflect that, like so:\newline
+
+
+{
+\centering
+
+
+\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+
+\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+%uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
+
+%Shape: Rectangle [id:dp11069137081996394] 
+\draw  [color={rgb, 255:red, 255; green, 0; blue, 0 }  ,draw opacity=1 ] (152.33,105.33) -- (185.67,105.33) -- (185.67,134) -- (152.33,134) -- cycle ;
+%Shape: Rectangle [id:dp5105405899279477] 
+\draw  [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,draw opacity=1 ] (185.67,105.33) -- (219,105.33) -- (219,134) -- (185.67,134) -- cycle ;
+%Shape: Rectangle [id:dp1241998432620336] 
+\draw  [color={rgb, 255:red, 80; green, 227; blue, 194 }  ,draw opacity=1 ] (219,105.33) -- (252.33,105.33) -- (252.33,134) -- (219,134) -- cycle ;
+%Straight Lines [id:da3925814990937547] 
+\draw    (270.33,270.67) -- (170.2,136.93) ;
+\draw [shift={(169,135.33)}, rotate = 413.18] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da8411143149408029] 
+\draw    (271.67,226.67) -- (202.21,135.59) ;
+\draw [shift={(201,134)}, rotate = 412.66999999999996] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da2927838400275865] 
+\draw    (274.33,188) -- (238.82,137.63) ;
+\draw [shift={(237.67,136)}, rotate = 414.81] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da8093183970331216] 
+\draw    (367,190) -- (391.67,190) ;
+\draw [shift={(393.67,190)}, rotate = 180] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da9695792273639827] 
+\draw    (366.33,230.67) -- (391,230.67) ;
+\draw [shift={(393,230.67)}, rotate = 180] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da1626297191907251] 
+\draw    (366.33,266) -- (391,266) ;
+\draw [shift={(393,266)}, rotate = 180] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+
+% Text Node
+\draw (162.67,112.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {7};
+% Text Node
+\draw (196.67,111.67) node [anchor=north west][inner sep=0.75pt]   [align=left] {7};
+% Text Node
+\draw (230,111.67) node [anchor=north west][inner sep=0.75pt]   [align=left] {4};
+% Text Node
+\draw (94.67,109.67) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont chmod}};
+% Text Node
+\draw (275.33,179.67) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont 100} in Binary};
+% Text Node
+\draw (275.33,219.67) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont 111} in Binary};
+% Text Node
+\draw (274.67,257) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont 111} in Binary};
+% Text Node
+\draw (403.33,179.67) node [anchor=north west][inner sep=0.75pt]   [align=left] {r--};
+% Text Node
+\draw (406,223.67) node [anchor=north west][inner sep=0.75pt]   [align=left] {rwx};
+% Text Node
+\draw (404.67,258.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {rwx};
+% Text Node
+\draw (264.67,110.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont spaghetti}};
+
+
+\end{tikzpicture}
+
+}
+
+This is a great way to see the intuitive conversion we have from octal digit to binary to rwx permission. Just remember the two steps I've listed above, and make sure you understand this example, and you should be set. Here are a few more commonly used \texttt{chmod} commands that you may see in the future. In order to fully understand this, I highly recommend you take the examples I'm listing below and work through diagrams like the one I've made above for each of them. If you do that, you'll be in great shape for the exam, where this is fairly likely to show up. (It was on my exam when I took this class).\newline
+
+For these examples, assume again that we have a file named \textbf{spaghetti} that we'd like to change the permissions of. \newline
+
+\begin{itemize}
+	\item \texttt{chmod 700 spaghetti} $\rightarrow$ Read write and execute permission for owner, with no access to anyone else (remember, 0 is like --- in rwx notation).
+	\item \texttt{chmod 500 spaghetti} $\rightarrow$ Read and execute permissions for owner with no access to anyone else.
+	\item \texttt{chmod 755 spaghetti} $\rightarrow$ Read, write, and execute permission for the owner, and read and execute for the group and the rest of the users. If you'll look on grace, you'll see that this is frequently employed by our instructors when they post new material.
+\end{itemize}
+
+As a little closing note, you can use \texttt{chmod -R} to recursively change file permissions in the same way that you'd use \texttt{cp -r} to perform a recursive copy. This comes in handy if you're trying to change the permissions of everything within a directory, including subdirectories.
+
+
+
 
 
 \section{Closing Thoughts}
