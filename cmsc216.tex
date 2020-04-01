@@ -1872,6 +1872,516 @@ For these examples, assume again that we have a file named \textbf{spaghetti} th
 
 As a little closing note, you can use \texttt{chmod -R} to recursively change file permissions in the same way that you'd use \texttt{cp -r} to perform a recursive copy. This comes in handy if you're trying to change the permissions of everything within a directory, including subdirectories.
 
+\subsection{Aside: Bash Scripting}
+
+\textit{Full disclosure- this section on bash scripting won't be required knowledge for your exam. If you're reviewing and are just preparing for an exam, no need to retain the 'Bash Scripting' material I'll be talking about.}\newline
+
+The first thing you need to know is that, sitting on top of UNIX, you're interacting with a program called a \textbf{shell}. It's basically a little environment that takes in commands that you give it, and it provides information back to you. From a shell, you're allowed to list the contents of a directory, make new ones, kick off other programs, and do plenty of other stuff. One such shell that became wildly popular is the \textbf{bash shell}, which is what we're using on grace today.
+
+Bash scripting is an essential part of any UNIX workflow. Let's say you wanted fire off a few command line commands in consecutive order, or wanted to perform a repetetive task. For example, let's assume you wanted to make \textit{n} folders in quick succession, each following a specific naming scheme. The most readable way to do something like that is to have a set of command line commands that you wanted to execute, each one right after the other. In other words, you wanted a \textbf{bash script} to do that work for you.\newline
+
+We'll also be covering a little bit of miscellaneous information regarding how scripts are used. There are a few nifty tidbits that I think are worth pulling from today's discussion.\newline
+
+The first thing you'll want to make note of is that we can use the return values of programs in bash scripts. When you're writing bash scripts that interact with the command line, just keep in mind that C is the framework upon which UNIX was built. In other words, it's only natural that UNIX and its commands (including its bash scripting language) play nice with C. The key here is knowing that you can check the return value of a C program's 'main' function via bash.\newline
+
+At the end of the day, there are just two things that you really need to know about bash scripts. First of all, remember that they are simply just executable sets of command line instructions, with a few programming constructs (conditional statements, loops) thrown in. A great example of a problem you could solve with a bash script is if you wanted to check whether a folder named 'tests' existed, and if it didn't, create it and fill it with a bunch of empty \texttt{.c} files.
+
+\subsection{Bitwise Operations}
+
+Since this is a computer systems course, it's good to start thinking in terms of \textit{bits}. In simple terms, you're going to want to start thinking of the binary representations of a lot of things. Bitwise operations are simply the operations that we conduct at this level- they work with the individual bits, or binary digits, of data that we store in our programs. Specifically, we're talking about simple operations like 'and', 'or', and 'xor' with 1's and 0's.\newline
+
+Here's a little bit of computer systems background for you- the reason we like to go all the way down to binary and perform operations there is because these 'bitwise' operations are much faster than their costlier, high-overhead counterparts- especially on simpler processors. Even on modern, faster machines, bitwise operations are still worth considering due to their lower resource consumption. On older machines, it was just as simple as knowing that bitwise operations simply took less steps; if you want a really simple analogy: it was easier for a computer to think in the language that it use by default. On newer machines, we could honestly probably say that bitwise operations take about the same amount of time as regular addition, multiplication, division, etc, thanks to things like instructional pipelines and more sophisticated architecture (CMSC411). However, as I said above, they still ultimately require less resources to perform. TL;DR - they're more efficient, and you should use them cleverly when you can to save your computer some work.\newline
+
+\subsubsection{How We Can Do This in C}
+
+So there's some background on bitwise operations in general, but here's some insight as to how we can do it in C. The reason we're learning this in CMSC216 and not in CMSC330 or CMSC132 is simply because this is a pretty low-level operation, so although there are probably ways to get around to doing this in Java or Ruby, the most applicable use case would probably be for when you're writing in C, which probably implies you're already trying to skimp on memory and resource usage.\newline
+
+That being said, there are \textbf{6} bitwise operators that you should remember in C.\newline
+
+\begin{itemize}
+	\item \textbf{\texttt{\&}} $\rightarrow$ bitwise AND, used the same way as the AND logic gate from CMSC250.
+	\item \textbf{\texttt{|}} $\rightarrow$ bitwise (inclusive) OR, used the same way as the OR logic gate from CMSC250.
+	\item \textbf{\texttt{\^}} $\rightarrow$ bitwise exclusive OR, again, used the same way as the XOR logic gate from CMSC250.
+	\item \textbf{\texttt{<<}} $\rightarrow$ bit-shift left. Don't let the name confuse you- this is one of the simplest bitwise operations. You're literally taking all the digits in a binary number, and shifting them left by one digit place. It's also good to note that you're filling the blank digits (the ones with nothing to their left) with zeros. I'll include a diagram below of bitshifts in a left and right direction.
+	\item \textbf{\texttt{>>}} $\rightarrow$ bit-shift right. Again, the same deal as above. This time, you'll be moving all the digits in a number to the right, and filling in the void created by a digit with nothing to its right with a zero.
+	\item \textbf{\texttt{-}} $\rightarrow$ bitwise NOT. Same as in CMSC250.
+	
+\end{itemize}
+
+These operations are best explained by a few code examples, and as such, I'm going to link an excellent website that provides some very clear and simple examples. The lecture slides are also a fantastic resource for this stuff, particularly for examples, so make sure to check them out.\newline
+
+{
+\textit{
+\href{https://www.tutorialspoint.com/cprogramming/c\_bitwise\_operators.htm}{https://www.tutorialspoint.com/cprogramming/c\_bitwise\_operators.htm}
+}
+}
+
+
+\subsubsection{Bit-Shift Example}
+
+Here's an example of a bit-shift in case you needed it. I think this is the easiest bitwise operation, but since we haven't covered it in CMSC250, it's worth seeing at least one example. Essentially, all you're doing is taking the digits in a binary number, and shifting them to either the left or right. Note that the shifts I'm demonstrating below are by an increment of 1, but it's of course totally conceptually valid to perform a bit shift by any amount.
+
+{
+\centering
+
+
+\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+
+\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+%uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
+
+%Shape: Rectangle [id:dp8828034661335886] 
+\draw   (62,54.33) -- (90.33,54.33) -- (90.33,88.67) -- (62,88.67) -- cycle ;
+%Shape: Rectangle [id:dp42716850197078593] 
+\draw   (90,54.33) -- (118.33,54.33) -- (118.33,88.67) -- (90,88.67) -- cycle ;
+%Shape: Rectangle [id:dp2677016614924078] 
+\draw   (118,54.33) -- (146.33,54.33) -- (146.33,88.67) -- (118,88.67) -- cycle ;
+%Shape: Rectangle [id:dp649622133852392] 
+\draw   (146,54.33) -- (174.33,54.33) -- (174.33,88.67) -- (146,88.67) -- cycle ;
+%Straight Lines [id:da27298157713196614] 
+\draw    (182.33,69.33) -- (230.48,89.24) ;
+\draw [shift={(232.33,90)}, rotate = 202.46] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Shape: Rectangle [id:dp8749912286413047] 
+\draw  [color={rgb, 255:red, 255; green, 0; blue, 0 }  ,draw opacity=1 ] (242,75) -- (270.33,75) -- (270.33,109.33) -- (242,109.33) -- cycle ;
+%Shape: Rectangle [id:dp6848359777047052] 
+\draw   (270,75) -- (298.33,75) -- (298.33,109.33) -- (270,109.33) -- cycle ;
+%Shape: Rectangle [id:dp14299815968721497] 
+\draw   (298,75) -- (326.33,75) -- (326.33,109.33) -- (298,109.33) -- cycle ;
+%Shape: Rectangle [id:dp013551429357448685] 
+\draw   (326,75) -- (354.33,75) -- (354.33,109.33) -- (326,109.33) -- cycle ;
+%Curve Lines [id:da1886869831462753] 
+\draw    (370.33,114) .. controls (363.26,129.44) and (357.42,123.77) .. (344.44,113.17) ;
+\draw [shift={(343,112)}, rotate = 398.99] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Curve Lines [id:da1230078485232381] 
+\draw    (341,115.33) .. controls (333.92,130.77) and (328.09,125.11) .. (315.11,114.51) ;
+\draw [shift={(313.67,113.33)}, rotate = 398.99] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Curve Lines [id:da7649309990507515] 
+\draw    (310.33,116.67) .. controls (303.26,132.11) and (297.42,126.44) .. (284.44,115.84) ;
+\draw [shift={(283,114.67)}, rotate = 398.99] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Curve Lines [id:da4422858400777201] 
+\draw    (279.67,116) .. controls (272.59,131.44) and (266.75,125.77) .. (253.77,115.17) ;
+\draw [shift={(252.33,114)}, rotate = 398.99] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Curve Lines [id:da17352984816469474] 
+\draw    (165,92.67) .. controls (157.92,108.11) and (152.09,102.44) .. (139.11,91.84) ;
+\draw [shift={(137.67,90.67)}, rotate = 398.99] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Curve Lines [id:da7261581249081148] 
+\draw    (135.67,94) .. controls (128.59,109.44) and (122.75,103.77) .. (109.77,93.17) ;
+\draw [shift={(108.33,92)}, rotate = 398.99] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Curve Lines [id:da17384339034333252] 
+\draw    (105,95.33) .. controls (97.92,110.77) and (92.09,105.11) .. (79.11,94.51) ;
+\draw [shift={(77.67,93.33)}, rotate = 398.99] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Curve Lines [id:da12512001747665702] 
+\draw    (74.33,94.67) .. controls (67.26,110.11) and (61.42,104.44) .. (48.44,93.84) ;
+\draw [shift={(47,92.67)}, rotate = 398.99] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Shape: Rectangle [id:dp2693737975748981] 
+\draw   (354.33,75) -- (382.67,75) -- (382.67,109.33) -- (354.33,109.33) -- cycle ;
+%Straight Lines [id:da2729018598573574] 
+\draw    (400.67,91.33) -- (457.12,70.69) ;
+\draw [shift={(459,70)}, rotate = 519.9100000000001] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Shape: Rectangle [id:dp46228873953180216] 
+\draw   (463.33,55.67) -- (491.67,55.67) -- (491.67,90) -- (463.33,90) -- cycle ;
+%Shape: Rectangle [id:dp8830986432067672] 
+\draw   (491.33,55.67) -- (519.67,55.67) -- (519.67,90) -- (491.33,90) -- cycle ;
+%Shape: Rectangle [id:dp6271802218982883] 
+\draw   (519.33,55.67) -- (547.67,55.67) -- (547.67,90) -- (519.33,90) -- cycle ;
+%Shape: Rectangle [id:dp6353911181595879] 
+\draw   (547.33,55.67) -- (575.67,55.67) -- (575.67,90) -- (547.33,90) -- cycle ;
+%Shape: Rectangle [id:dp6434846921441273] 
+\draw   (62,202.33) -- (90.33,202.33) -- (90.33,236.67) -- (62,236.67) -- cycle ;
+%Shape: Rectangle [id:dp704281929476223] 
+\draw   (90,202.33) -- (118.33,202.33) -- (118.33,236.67) -- (90,236.67) -- cycle ;
+%Shape: Rectangle [id:dp8216884247708056] 
+\draw   (118,202.33) -- (146.33,202.33) -- (146.33,236.67) -- (118,236.67) -- cycle ;
+%Shape: Rectangle [id:dp0928403616119251] 
+\draw   (146,202.33) -- (174.33,202.33) -- (174.33,236.67) -- (146,236.67) -- cycle ;
+%Straight Lines [id:da0043525204585196375] 
+\draw    (182.33,217.33) -- (230.48,237.24) ;
+\draw [shift={(232.33,238)}, rotate = 202.46] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Shape: Rectangle [id:dp5144438115376195] 
+\draw  [color={rgb, 255:red, 0; green, 0; blue, 0 }  ,draw opacity=1 ] (242,223) -- (270.33,223) -- (270.33,257.33) -- (242,257.33) -- cycle ;
+%Shape: Rectangle [id:dp9092849562629273] 
+\draw   (270,223) -- (298.33,223) -- (298.33,257.33) -- (270,257.33) -- cycle ;
+%Shape: Rectangle [id:dp10713472317521311] 
+\draw   (298,223) -- (326.33,223) -- (326.33,257.33) -- (298,257.33) -- cycle ;
+%Shape: Rectangle [id:dp1356208368179469] 
+\draw   (326,223) -- (354.33,223) -- (354.33,257.33) -- (326,257.33) -- cycle ;
+%Shape: Rectangle [id:dp8726666412670342] 
+\draw  [color={rgb, 255:red, 255; green, 0; blue, 0 }  ,draw opacity=1 ] (354.33,223) -- (382.67,223) -- (382.67,257.33) -- (354.33,257.33) -- cycle ;
+%Straight Lines [id:da9357925218727965] 
+\draw    (400.67,239.33) -- (457.12,218.69) ;
+\draw [shift={(459,218)}, rotate = 519.9100000000001] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Shape: Rectangle [id:dp45290242099217615] 
+\draw   (463.33,203.67) -- (491.67,203.67) -- (491.67,238) -- (463.33,238) -- cycle ;
+%Shape: Rectangle [id:dp6339724163630963] 
+\draw   (491.33,203.67) -- (519.67,203.67) -- (519.67,238) -- (491.33,238) -- cycle ;
+%Shape: Rectangle [id:dp06338056921526669] 
+\draw   (519.33,203.67) -- (547.67,203.67) -- (547.67,238) -- (519.33,238) -- cycle ;
+%Shape: Rectangle [id:dp5798463851786051] 
+\draw   (547.33,203.67) -- (575.67,203.67) -- (575.67,238) -- (547.33,238) -- cycle ;
+%Curve Lines [id:da15477687323030198] 
+\draw    (76.33,239.33) .. controls (80.79,252.7) and (90.11,247.22) .. (101.39,240.32) ;
+\draw [shift={(103,239.33)}, rotate = 508.57] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Curve Lines [id:da24670710934772389] 
+\draw    (106.33,240) .. controls (110.79,253.37) and (120.11,247.89) .. (131.39,240.98) ;
+\draw [shift={(133,240)}, rotate = 508.57] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Curve Lines [id:da7950664670344985] 
+\draw    (137,239.33) .. controls (141.46,252.7) and (150.78,247.22) .. (162.06,240.32) ;
+\draw [shift={(163.67,239.33)}, rotate = 508.57] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Curve Lines [id:da0768678421657879] 
+\draw    (167,240) .. controls (171.46,253.37) and (180.78,247.89) .. (192.06,240.98) ;
+\draw [shift={(193.67,240)}, rotate = 508.57] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Curve Lines [id:da8369600258660683] 
+\draw    (253,260) .. controls (257.46,273.37) and (266.78,267.89) .. (278.06,260.98) ;
+\draw [shift={(279.67,260)}, rotate = 508.57] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Curve Lines [id:da7185883705444674] 
+\draw    (283,260.67) .. controls (287.46,274.04) and (296.78,268.56) .. (308.06,261.65) ;
+\draw [shift={(309.67,260.67)}, rotate = 508.57] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Curve Lines [id:da4989214227414751] 
+\draw    (313.67,260) .. controls (318.12,273.37) and (327.44,267.89) .. (338.73,260.98) ;
+\draw [shift={(340.33,260)}, rotate = 508.57] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Curve Lines [id:da6259249545462894] 
+\draw    (343.67,260.67) .. controls (348.12,274.04) and (357.44,268.56) .. (368.73,261.65) ;
+\draw [shift={(370.33,260.67)}, rotate = 508.57] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+
+% Text Node
+\draw (31.33,23) node [anchor=north west][inner sep=0.75pt]   [align=left] {Q: Perform a left shift on the binary number {\fontfamily{pcr}\selectfont 0110}};
+% Text Node
+\draw (32.67,61) node [anchor=north west][inner sep=0.75pt]   [align=left] {A:};
+% Text Node
+\draw (70.67,61.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont 0}};
+% Text Node
+\draw (98.67,61.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont 1}};
+% Text Node
+\draw (126.67,61.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont 1}};
+% Text Node
+\draw (154.67,61.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont 0}};
+% Text Node
+\draw (250.67,82) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont \textcolor[rgb]{1,0,0}{0}}};
+% Text Node
+\draw (278.67,82) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont 1}};
+% Text Node
+\draw (306.67,82) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont 1}};
+% Text Node
+\draw (334.67,82) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont 0}};
+% Text Node
+\draw (239.33,56) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont {\tiny \textcolor[rgb]{1,0,0}{overflow}}}};
+% Text Node
+\draw (362.67,82) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 126; green, 211; blue, 33 }  ,opacity=1 ] [align=left] {{\fontfamily{pcr}\selectfont 0}};
+% Text Node
+\draw (341.33,54) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\tiny \textcolor[rgb]{0.49,0.83,0.13}{{\fontfamily{pcr}\selectfont empty- set to 0}}}};
+% Text Node
+\draw (38,112.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\small (move all digits left by 1)}};
+% Text Node
+\draw (472,62.67) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont 1}};
+% Text Node
+\draw (500,62.67) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont 1}};
+% Text Node
+\draw (528,62.67) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont 0}};
+% Text Node
+\draw (556,62.67) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont 0}};
+% Text Node
+\draw (474,98) node [anchor=north west][inner sep=0.75pt]   [align=left] {Answer: {\fontfamily{pcr}\selectfont 1100}};
+% Text Node
+\draw (31.33,171) node [anchor=north west][inner sep=0.75pt]   [align=left] {Q: Perform a right shift on the binary number {\fontfamily{pcr}\selectfont 1010}};
+% Text Node
+\draw (32.67,209) node [anchor=north west][inner sep=0.75pt]   [align=left] {A:};
+% Text Node
+\draw (70.67,209.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont 1}};
+% Text Node
+\draw (98.67,209.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont 0}};
+% Text Node
+\draw (126.67,209.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont 1}};
+% Text Node
+\draw (154.67,209.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont 0}};
+% Text Node
+\draw (250.67,230) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 126; green, 211; blue, 33 }  ,opacity=1 ] [align=left] {{\fontfamily{pcr}\selectfont \textcolor[rgb]{0.49,0.83,0.13}{0}}};
+% Text Node
+\draw (278.67,230) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont 1}};
+% Text Node
+\draw (306.67,230) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont 0}};
+% Text Node
+\draw (334.67,230) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont 1}};
+% Text Node
+\draw (352.67,202) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont {\tiny \textcolor[rgb]{1,0,0}{overflow}}}};
+% Text Node
+\draw (362.67,230) node [anchor=north west][inner sep=0.75pt]  [color={rgb, 255:red, 255; green, 0; blue, 0 }  ,opacity=1 ] [align=left] {{\fontfamily{pcr}\selectfont 0}};
+% Text Node
+\draw (226,202) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\tiny \textcolor[rgb]{0.49,0.83,0.13}{{\fontfamily{pcr}\selectfont empty- set to 0}}}};
+% Text Node
+\draw (40.67,262.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\small (move all digits right by 1)}};
+% Text Node
+\draw (472,210.67) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont 0}};
+% Text Node
+\draw (500,210.67) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont 1}};
+% Text Node
+\draw (528,210.67) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont 0}};
+% Text Node
+\draw (556,210.67) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont 1}};
+% Text Node
+\draw (474,246) node [anchor=north west][inner sep=0.75pt]   [align=left] {Answer: {\fontfamily{pcr}\selectfont 0101}};
+
+
+\end{tikzpicture}\newline\newline
+
+}
+
+\subsubsection{Aside: Multiplication and Division by Powers of 2 using BSL/BSR}
+
+Additionally, there's one other cool nuance with bit-shifts that I want to point out. Notice how we're working with binary. Think back to the decimal number system for a bit. If you wanted to perform a quick division by 10, let's say in this case, we wanted to divide 360 by 10 (with no remainder), your elementary school intuition says that all you need to do is drop the zero at the end. But what did we really do?\newline
+
+In actuality, you're performing a sort of bit-shift here. Think of it this way- instead of dropping the zero at the end when you performed \texttt{360/10}, you simply just performed the decimal equivalent of bit-shifting 360 to the right. Additionally, if you ever wanted to multiply a number by 10, I invite you to think back to elementary school. Multiplication by 10 was by far the easiest, because all you had to do was throw an extra zero onto the end of a number. Let's think of that in a similar way- you weren't just throwing a zero onto the end of your number, you were performing the decimal equivalent of bit-shifting it to the left. This all relies on the idea that the number 10 is the basis of the decimal system. So the question is- can we replicate the same special behavior with the binary number system and the number 2? The answer is yes.\newline
+
+In that same way, if we wanted to divide a number that we had in binary very quickly by two, all we have to do is bit-shift it once to the right. For example- if we wanted to divide 6 by 2, we could take a look at their binary notations.\newline
+
+In binary, 6 is \texttt{110}. If we wanted to divide that by 2, we can perform a bit-shift right and get our result, which would be \texttt{011}.\newline
+
+In a similar way, if we wanted to quickly multiply a number by 2, it's as easy as performing a bit-shift left on it. In that way, we can easily turn 3 (\texttt{011}) into 6 (\texttt{110}) in a simple, inexpensive operation.\newline
+
+Here's the main takeaway. By taking advantage of the way binary is structured, we can very easily multiply and divide by 2 (and by repeating the process, by powers of 2) using only bit-shift operations.
+
+\subsection{Number Systems \& How to Convert Between Them}
+
+It's almost guaranteed on an exam that you'll have \textit{some} question that asks you something along the lines of the following:\newline
+
+\textit{Convert XXXXX into hexadecimal/binary/octal/decimal.}\newline
+
+Luckily, once you understand one of these questions, you basically understand them all. First things first, here's a review of the number systems that you'll probably see in CMSC216:\newline
+
+\begin{itemize}
+	\item \textbf{Decimal} is our best friend, and the number system that you're used to. Also called base-10, it's the number notation that you're most familiar with. I'd recommend using this as an intermediary step when for conversions if you end up getting stuck.
+	\item \textbf{Binary} is the computer's best friend. A number system only composed of \texttt{1}'s and \texttt{0}'s, this is the home of all the bitwise operations.
+	\item \textbf{Octal} is that one number system you learned for understanding file permissions earlier this week. Using the numbers \texttt{0} through \texttt{7}, it's got just enough niche use cases in computing for it to be worth getting somewhat comfortable with.
+	\item \textbf{Hexadecimal} is the biggest number system we've gotten to dealing with in this class so far, and it essentially makes use of 16 digits. In order, those are \texttt{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, A, B, C, D, E, F}. Think of it this way- in the same way our regular base-10 number system 'overflows' and goes back over to 0 after we add 1 to 9, the hexadecimal system overflows and goes back to 0 after we add 1 to F, which is \textit{its} upper limit.
+\end{itemize}
+
+Converting between these number systems is usually just a matter of division. Here are a few examples to get you started, but in my opinion, this is just a matter of practice. Once you've done this a few times between a few different number systems, you may as wel have done it hundreds of times. It's all just in how quick you are with the actual division. I'd recommend not only doing the worksheet I'm linking below, but also practicing converting between each of the 4 system types I've pointed out above. (16 problems is a lot though, so space them out over a few days, maybe).\newline
+
+
+{
+\centering
+
+
+
+
+
+
+
+\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+
+\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+%uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
+
+%Straight Lines [id:da41461429072144007] 
+\draw    (145,84.67) -- (238.33,84.01) ;
+\draw [shift={(240.33,84)}, rotate = 539.6] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Curve Lines [id:da6413874070721497] 
+\draw    (266.67,73.33) .. controls (301.14,41.81) and (360.84,43.28) .. (391.61,71.37) ;
+\draw [shift={(393,72.67)}, rotate = 224.04] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Curve Lines [id:da2654695661421509] 
+\draw    (398,71.33) .. controls (432.48,39.81) and (492.18,41.28) .. (522.95,69.37) ;
+\draw [shift={(524.33,70.67)}, rotate = 224.04] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da6320211359785352] 
+\draw    (338,100) -- (424.99,195.85) ;
+\draw [shift={(426.33,197.33)}, rotate = 227.78] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da34124387637791287] 
+\draw    (450,96) -- (456.21,192.67) ;
+\draw [shift={(456.33,194.67)}, rotate = 266.33] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da7492008776478719] 
+\draw    (578.67,92) -- (492.33,189.17) ;
+\draw [shift={(491,190.67)}, rotate = 311.62] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da9525951020629994] 
+\draw    (461.33,226.33) -- (553.23,274.41) ;
+\draw [shift={(555,275.33)}, rotate = 207.62] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+
+% Text Node
+\draw (41.33,244.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {Q: Convert 574 (base 10) to Hexadecimal};
+% Text Node
+\draw (95.33,75.67) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont {\LARGE 574}}};
+% Text Node
+\draw (149.33,100.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\small \textcolor[rgb]{0.61,0.61,0.61}{divide by 16}}};
+% Text Node
+\draw (252,76.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont {\LARGE 35 R:\textcolor[rgb]{0.29,0.56,0.89}{14}}}};
+% Text Node
+\draw (293.33,33) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\small \textcolor[rgb]{0.61,0.61,0.61}{divide by 16}}};
+% Text Node
+\draw (385.33,75) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont {\LARGE 2 R:\textcolor[rgb]{0.31,0.89,0.76}{3}}}};
+% Text Node
+\draw (422,31.67) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\small \textcolor[rgb]{0.61,0.61,0.61}{divide by 16}}};
+% Text Node
+\draw (516,72.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont {\LARGE 0 R:\textcolor[rgb]{0.49,0.83,0.13}{2}}}};
+% Text Node
+\draw (423.33,200.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont {\LARGE \textcolor[rgb]{0.29,0.56,0.89}{E} \textcolor[rgb]{0.31,0.89,0.76}{3} \textcolor[rgb]{0.49,0.83,0.13}{2}}}};
+% Text Node
+\draw (506.2,209.11) node [anchor=north west][inner sep=0.75pt]  [rotate=-0.41] [align=left] {{\small \textcolor[rgb]{0.61,0.61,0.61}{(Comes out backwards)}}};
+% Text Node
+\draw (560,264.67) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont {\LARGE 23E}}};
+% Text Node
+\draw (43.33,272.67) node [anchor=north west][inner sep=0.75pt]   [align=left] {A: 23E};
+% Text Node
+\draw (330.56,4.83) node [anchor=north] [inner sep=0.75pt]   [align=left] {\textbf{Example 1: Converting Decimal to Hexadecimal}};
+
+
+\end{tikzpicture}\newline\newline
+
+
+}
+
+Notice that when we performed the conversion, the numbers initially came out backwards. There are cases for when our conversion comes out backwards and when it comes out forwards, and I would encourage you to practice till you figure out when each comes out. I leave that as an exercise to the reader. Generally, you should be able to use common sense to figure out which order your resulting digits should go in, though. If anything, try and convert it back and see if your conversion worked.\newline
+
+{
+\centering
+
+
+\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+
+\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+%uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
+
+%Straight Lines [id:da41461429072144007] 
+\draw    (53,103) -- (127.67,103) ;
+\draw [shift={(129.67,103)}, rotate = 180] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Curve Lines [id:da6413874070721497] 
+\draw    (151.33,90.67) .. controls (185.81,59.15) and (226.75,59.97) .. (256.96,88.03) ;
+\draw [shift={(258.33,89.33)}, rotate = 224.04] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Curve Lines [id:da8972634232951618] 
+\draw    (266,88) .. controls (300.47,56.48) and (341.42,57.3) .. (371.63,85.37) ;
+\draw [shift={(373,86.67)}, rotate = 224.04] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Curve Lines [id:da6638141996376121] 
+\draw    (381.33,85.33) .. controls (415.81,53.81) and (456.75,54.63) .. (486.96,82.7) ;
+\draw [shift={(488.33,84)}, rotate = 224.04] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Curve Lines [id:da8323805553481021] 
+\draw    (495.33,83.33) .. controls (529.81,51.81) and (570.75,52.63) .. (600.96,80.7) ;
+\draw [shift={(602.33,82)}, rotate = 224.04] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da5460404441346167] 
+\draw    (210.67,117) -- (352.61,199.66) ;
+\draw [shift={(354.33,200.67)}, rotate = 210.22] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da23307743789617097] 
+\draw    (325.67,114) -- (366.79,198.2) ;
+\draw [shift={(367.67,200)}, rotate = 243.97] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da6652803279257993] 
+\draw    (433,115.33) -- (382.05,198.3) ;
+\draw [shift={(381,200)}, rotate = 301.56] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da9395976129715173] 
+\draw    (545,114.67) -- (398.07,198.34) ;
+\draw [shift={(396.33,199.33)}, rotate = 330.34000000000003] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da4636114313346177] 
+\draw    (659.67,126.67) -- (414.25,198.77) ;
+\draw [shift={(412.33,199.33)}, rotate = 343.63] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+
+% Text Node
+\draw (41.33,244.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {Q: Convert 46 (base 10) to Binary};
+% Text Node
+\draw (17.33,92.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont {\LARGE 46}}};
+% Text Node
+\draw (56,78.67) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\small \textcolor[rgb]{0.61,0.61,0.61}{divide by 2}}};
+% Text Node
+\draw (135.33,92.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont {\LARGE 23 R:\textcolor[rgb]{0.29,0.56,0.89}{1}}}};
+% Text Node
+\draw (170,49.67) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\small \textcolor[rgb]{0.61,0.61,0.61}{divide by 2}}};
+% Text Node
+\draw (246.67,92.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont {\LARGE 11 R:\textcolor[rgb]{0.31,0.89,0.76}{1}}}};
+% Text Node
+\draw (43.33,273) node [anchor=north west][inner sep=0.75pt]   [align=left] {A: 11110};
+% Text Node
+\draw (332.56,9) node [anchor=north] [inner sep=0.75pt]   [align=left] {\textbf{Example 2: Converting Decimal to Binary}};
+% Text Node
+\draw (282,48.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\small \textcolor[rgb]{0.61,0.61,0.61}{divide by 2}}};
+% Text Node
+\draw (370,92.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont {\LARGE 5 R:\textcolor[rgb]{0.49,0.83,0.13}{1}}}};
+% Text Node
+\draw (482.67,92.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont {\LARGE 2 R:\textcolor[rgb]{0.97,0.91,0.11}{1}}}};
+% Text Node
+\draw (598,92.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont {\LARGE 5 R:\textcolor[rgb]{0.96,0.65,0.14}{0}}}};
+% Text Node
+\draw (348,207) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont {\LARGE \textcolor[rgb]{0.29,0.56,0.89}{1}\textcolor[rgb]{0.31,0.89,0.76}{1}\textcolor[rgb]{0.72,0.91,0.53}{1}\textcolor[rgb]{0.97,0.91,0.11}{1}\textcolor[rgb]{0.96,0.65,0.14}{0}}}};
+% Text Node
+\draw (432.67,217.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\small \textcolor[rgb]{0.61,0.61,0.61}{(notice how it isn't backwards this time)}}};
+
+
+\end{tikzpicture}\newline\newline
+
+}
+
+These two have been examples of converting Decimal to other number systems, but what if we wanted to convert back to Decimal from there? The process is fairly simple, and it leverages our decimal-based knowledge of the other number system. Example 3 is one such example, where we're converting from an unfamiliar base back into decimal. The procedure looks a little different, but is based in the same principles of division.\newline
+
+{
+\centering
+
+
+
+\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+
+\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+%uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
+
+%Straight Lines [id:da9525951020629994] 
+\draw    (274,59) -- (120.96,91.58) ;
+\draw [shift={(119,92)}, rotate = 347.98] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da07598835439545237] 
+\draw    (301.33,58.33) -- (467.04,90.95) ;
+\draw [shift={(469,91.33)}, rotate = 191.13] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da156754651471259] 
+\draw    (287,59.33) -- (287.63,90.67) ;
+\draw [shift={(287.67,92.67)}, rotate = 268.85] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da9803275422425445] 
+\draw    (124.33,112.67) -- (225.73,138.18) ;
+\draw [shift={(227.67,138.67)}, rotate = 194.12] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da6322152821009867] 
+\draw    (464.33,112) -- (338.97,135.63) ;
+\draw [shift={(337,136)}, rotate = 349.33000000000004] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da49628645319206577] 
+\draw    (287,105.83) -- (287.63,137.17) ;
+\draw [shift={(287.67,139.17)}, rotate = 268.85] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+
+% Text Node
+\draw (144,249.67) node [anchor=north west][inner sep=0.75pt]   [align=left] {Q: Convert AF6 (Hexadecimal) to Decimal};
+% Text Node
+\draw (255.33,169) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont {\LARGE =2806}}};
+% Text Node
+\draw (146,278) node [anchor=north west][inner sep=0.75pt]   [align=left] {A: 2806};
+% Text Node
+\draw (295.89,6.83) node [anchor=north] [inner sep=0.75pt]   [align=left] {\textbf{Example 3: Converting Hexadecimal to Decimal}};
+% Text Node
+\draw (266,36) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont {\LARGE \textcolor[rgb]{0.82,0.01,0.11}{A}\textcolor[rgb]{0.96,0.65,0.14}{F}\textcolor[rgb]{0.55,0.34,0.16}{6}}}};
+% Text Node
+\draw (83.33,95.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont {\large \textcolor[rgb]{0.82,0.01,0.11}{10 * (16*16)}}}};
+% Text Node
+\draw (243.33,95.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont {\large \textcolor[rgb]{0.96,0.65,0.14}{15 * (16)}}}};
+% Text Node
+\draw (468,95.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont {\large \textcolor[rgb]{0.55,0.34,0.16}{6}}}};
+% Text Node
+\draw (211.33,144.67) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont {\large \textcolor[rgb]{0.82,0.01,0.11}{2560}\textcolor[rgb]{0,0,0}{ + }\textcolor[rgb]{0.96,0.65,0.14}{240}\textcolor[rgb]{0,0,0}{ +}\textcolor[rgb]{0.82,0.01,0.11}{ }\textcolor[rgb]{0.55,0.34,0.16}{6}}}};
+
+
+\end{tikzpicture}
+
+
+
+}
+
+
+\subsubsection{Practice Worksheet}
+
+TAs have been given specific instructions not to share the answers to this worksheet, but feel free to follow along and complete this for practice (and maybe drop by discussion or office hours for help getting the correct solutions if need be). The worksheet itself can be found at the following link:\newline
+
+{
+\textit{
+\href{http://www.cs.umd.edu/class/spring2019/cmsc216/labs/BitwiseOpWorksheet.pdf}{http://www.cs.umd.edu/class/spring2019/cmsc216/labs/BitwiseOpWorksheet.pdf}\newline
+}
+}
+
+
+For problems 1-5 on the worksheet, you'll find the reasoning in the 'Converting Between Number Systems' section to be the most helpful. For problems 6-8, you'll find the 'Bitwise Operations' section to be the most helpful.\newline
+
+Simply understanding the logic behind the bitwise operations here isn't enough. Making sure you understand how to actually implement the bitwise operators in C is the key. Additionally, if you practice enough conversions from decimal into other number systems, and then enough from other number systems back into decimal in order to understand both of these processes, I'd say you're in great shape for the exam.
+
+
+
+
+
+
+
+
 
 
 
