@@ -2366,7 +2366,109 @@ These two have been examples of converting Decimal to other number systems, but 
 }
 
 
-\subsubsection{Practice Worksheet}
+\subsection{Two's Complement}
+
+Yes, number systems are undoubtedly cool, and the ability of computers to keep track of two states (on and off) make binary easily the most convenient number system to use on a computer, but this poses a new problem. In the way that we think about numbers, let's say that we end up subtracting a little too much and go end up below zero. If you're doing subtraction on paper in school, this can be handled pretty easily- you just slap a negative sign on the front of your number and call it a day. Unfortunately, computers (at a low level) are not smart enough to afford us this same convenience.\newline
+
+Luckily, some very clever engineers figured out how to account for negative numbers. In fact, they came up with multiple ways to represent them, but in the case of 216, we'll focus on a method known as \textbf{Two's Complement}, which is basically the industry standard in this case.\newline
+
+Having the ability to represent negative numbers using only binary allows us to represent many mathematical problems fairly easily on computers.\newline
+
+So what is \textbf{Two's Complement}? Simply speaking, it's a notation based in binary that allows us to easily represent negative numbers.\newline
+
+\subsubsection{The Cost of Using Two's Complement}
+
+First, you'll need to take note that given \textit{n} bits to represent numbers with, using Two's complement, you'll only be able to represent numbers from $0$ to $2^{n-1}-1$. This is because we use what would be the \textit{most significant bit}, (that is, the bit which holds the highest value in binary) as the bit that tells us whether we're using a negative number or not. For example, if we were using 8 bit numbers:\newline
+
+{
+\centering
+
+
+\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+
+\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+%uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
+
+%Shape: Rectangle [id:dp33747664519688614] 
+\draw  [color={rgb, 255:red, 255; green, 0; blue, 0 }  ,draw opacity=1 ] (179.67,91.33) -- (204.67,91.33) -- (204.67,144.67) -- (179.67,144.67) -- cycle ;
+%Shape: Rectangle [id:dp5961693254702363] 
+\draw   (204.67,91.33) -- (229.67,91.33) -- (229.67,144.67) -- (204.67,144.67) -- cycle ;
+%Shape: Rectangle [id:dp9559418602335925] 
+\draw   (229.67,91.33) -- (254.67,91.33) -- (254.67,144.67) -- (229.67,144.67) -- cycle ;
+%Shape: Rectangle [id:dp9773364694179354] 
+\draw   (254.67,91.33) -- (279.67,91.33) -- (279.67,144.67) -- (254.67,144.67) -- cycle ;
+%Shape: Rectangle [id:dp04039980622237671] 
+\draw   (279.67,91.33) -- (304.67,91.33) -- (304.67,144.67) -- (279.67,144.67) -- cycle ;
+%Shape: Rectangle [id:dp046623928889861777] 
+\draw   (304.67,91.33) -- (329.67,91.33) -- (329.67,144.67) -- (304.67,144.67) -- cycle ;
+%Shape: Rectangle [id:dp8107258504853246] 
+\draw   (329.67,91.33) -- (354.67,91.33) -- (354.67,144.67) -- (329.67,144.67) -- cycle ;
+%Shape: Rectangle [id:dp9098116937433045] 
+\draw   (354.67,91.33) -- (379.67,91.33) -- (379.67,144.67) -- (354.67,144.67) -- cycle ;
+%Straight Lines [id:da018443495168281476] 
+\draw    (162.33,204.67) -- (188.13,151.14) ;
+\draw [shift={(189,149.33)}, rotate = 475.73] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Curve Lines [id:da9876798074310865] 
+\draw    (211,84.67) .. controls (211.67,54.67) and (369.67,60.67) .. (369.67,84.67) ;
+%Straight Lines [id:da9752577230827041] 
+\draw    (288.33,39.33) -- (288.33,57.33) ;
+\draw [shift={(288.33,59.33)}, rotate = 270] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+
+% Text Node
+\draw (181.67,94.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont {\Huge \textcolor[rgb]{1,0,0}{0}}}};
+% Text Node
+\draw (206.67,94.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont {\Huge 0}}};
+% Text Node
+\draw (231.67,94.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont {\Huge 0}}};
+% Text Node
+\draw (256.67,94.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont {\Huge 0}}};
+% Text Node
+\draw (281.67,94.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont {\Huge 0}}};
+% Text Node
+\draw (306.67,94.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont {\Huge 0}}};
+% Text Node
+\draw (331.67,94.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont {\Huge 0}}};
+% Text Node
+\draw (356.67,94.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont {\Huge 0}}};
+% Text Node
+\draw (38.67,209.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {If this bit is 0, the number is positive\\If this bit is 1, the number is negative};
+% Text Node
+\draw (107.33,11.67) node [anchor=north west][inner sep=0.75pt]   [align=left] {We can use the rest of these bits to represent our number};
+
+
+\end{tikzpicture}\newline\newline
+
+}
+
+That being said, it's a good rule of thumb not to store numbers that exceed the second to most significant bit on Two's complement systems. (On an 8-bit system like in the diagram above, this would mean that the largest number we can store is \texttt{01111111}.\newline
+
+Here's how you'd actually go about doing it. Let's say you had an integer \texttt{n}. If you wanted to store \texttt{n} on a system that uses Two's Complement, you'd look at \texttt{n}'s sign. If it were 0 or positive, you're all good. No Two's complement magic has to happen as long as \texttt{n} does not exceed the storage afforded to you on the available bits. (make sure not to use the most significant bit!) In other words, on an 8-bit system using Two's Complement, the largest number we'd be able to store is 125, or \texttt{01111111} like we mentioned above.\newline
+
+\subsubsection{Negative Numbers}
+
+However, if \texttt{n} were negative, it's a little more complicated. Here's what you would do in that case. For\newline
+
+First, find the \textit{complement} of the number you're trying to represent. For this example, let's assume that we were trying to represent $-5$.\newline
+
+For now, let's forget about the negative sign. In binary, 5 ends up being \texttt{0101}. The complement of this number is basically just the opposite of all the bits in the number, which would end up being \texttt{1010}.\newline
+
+Next, you'll want to add 1 to the number. We do this so that when we end up doing math that involves negative numbers, it comes out correctly. As such, 5 in Two's Complement notation is \texttt{1011}.\newline
+
+\subsubsection{The Most Significant Bit}
+
+Remember when we made sure to keep that first most significant bit as zero if the number was positive? We did that on purpose, so that if we flipped the bits to find the complement, we would end up having a 1 in the most significant bit. In that sense, we can tell if our number is negative just by checking that first most significant bit. If it's a 1, we know for sure that our number is negative, and if it's a 0, we know for sure that our number is positive.
+
+\subsubsection{How it All Comes Together}
+
+Now you may be wondering: having that first most significant bit to tell us if numbers are positive or negative is a bit clever, but why would we perform these seemingly arbitrary operations on a binary number? Honestly, I think it's a little harder to convert negative numbers from Two's Complement notation back into decimal, only because the number isn't as immediately obvious as it would be in binary- in other words, it doesn't look as intuitive.\newline
+
+The real magic behind two's complement is when you actually try to do math with it. If you do some basic binary addition with Two's Complement, you'll find that the negative numbers \textbf{actually work}.\newline
+
+For example, if you try adding 2 and -2 (\texttt{0010} and \texttt{1110}), you'll end up with \texttt{0000} (truncate the overflow bit at the far left), which is 0! Try it with some other numbers, it just works!\newline
+
+In conclusion, Two's Complement has a few nuances, but here's what you need to remember: It's a notation that, at the cost of the most significant bit, allows us to cleverly represent negative numbers in an environment with only binary, and is designed in such a way that addition, subtraction, and other operations work perfectly within it.
+
+\subsection{Practice Worksheet}
 
 TAs have been given specific instructions not to share the answers to this worksheet, but feel free to follow along and complete this for practice (and maybe drop by discussion or office hours for help getting the correct solutions if need be). The worksheet itself can be found at the following link:\newline
 
@@ -2377,7 +2479,7 @@ TAs have been given specific instructions not to share the answers to this works
 }
 
 
-For problems 1-5 on the worksheet, you'll find the reasoning in the 'Converting Between Number Systems' section to be the most helpful. For problems 6-8, you'll find the 'Bitwise Operations' section to be the most helpful.\newline
+For problems 1-5 on the worksheet, you'll find the reasoning in the 'Converting Between Number Systems' section and the 'Two's Complement' section to be the most helpful. For problems 6-8, you'll find the 'Bitwise Operations' section to be the most helpful.\newline
 
 Simply understanding the logic behind the bitwise operations here isn't enough. Making sure you understand how to actually implement the bitwise operators in C is the key. Additionally, if you practice enough conversions from decimal into other number systems, and then enough from other number systems back into decimal in order to understand both of these processes, I'd say you're in great shape for the exam.
 
