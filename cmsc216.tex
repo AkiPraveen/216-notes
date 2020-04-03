@@ -1449,7 +1449,87 @@ At this point, we're done. We've done all the recompiling that we need to for th
 
 So that's how we deal with compilation in makefiles. I invite you to take a look at your old projects that have makefiles in them and change some files around and keep running \texttt{make}. Try drawing your own dependency trees and seeing what recompiles when you make edits to different files. Once you do that enough, you should be ready for any \texttt{make}-related stuff that pops up on an exam.\newline
 
-For more nitty-gritty details on \texttt{make}, definitely take a look at the slides, they have the information you need. However, more or less, exams will probably ask you to either cook up a makefile on your own or decide what will be recompiled if you change some files. I want to make sure that you get the basic concept of all this, so as long as you do what I detail above and remember some of the key points from the slides, you should be in very good shape for exams.\newline
+For more nitty-gritty details on \texttt{make}, definitely take a look at the slides, they have the information you need. However, more or less, exams will probably ask you to either cook up a makefile on your own or decide what will be recompiled if you change some files. I want to make sure that you get the basic concept of all this, so as long as you do what I detail above and remember some of the key points from the slides, you should be in very good shape for exams.
+
+\subsubsection{Makefile Examples}
+
+By popular demand, here's a section on how to make your own Makefile. I'm going to walk us through the example in the 'Make' slides, and give us an example from a project that was just due.\newline
+
+First, let's go through the example for the tree I've drawn out above. Like we talked about earlier, let's look at the main components. We have:
+
+\begin{itemize}
+	\item \textbf{\texttt{publicX}} $\rightarrow$ our main executable. This one's going to require everything else to be built in order for it to work.
+	\item \textbf{\texttt{publicX.o} and \texttt{puzzles.o}} $\rightarrow$ the object files, the aggregate of the \texttt{.c} and the \texttt{.h} files. These are going to need the C script files and header files to be compiled in order to be built.
+	\item \textbf{\texttt{publicX.c}, \texttt{puzzles.h}, and \texttt{puzzles.c}} $\rightarrow$ the C script and header files, this is where our work ends and the compiler's starts. We need to start off making targets for these, then take care of the elements on the tree that point to them from there.
+\end{itemize}
+
+Taking this into account, let's start by creating an empty file called \texttt{Makefile}. \newline
+
+Something you should keep in mind when creating Makefiles is that there shouldn't be 'rules' for the C script or header files. We don't need to define any rules for C to 'compile' the C files or the H files because we're the ones who wrote them. We should therefore start with the object files. Here are the first targets we're going to add to our Makefile.
+
+\begin{lstlisting}[language=bash]
+publicX.o: publicX.c puzzles.h
+	gcc -c publicX.c 
+	
+puzzles.o: puzzles.c puzzles.h
+	gcc -c puzzles.c
+\end{lstlisting}
+
+Now that we've got our C files, H files, and object files covered, let's move up the tree. In this case, the next step is pretty clear. We've taken care of the middle level of the 'make tree', now we just need to get to the remaining level. In other words, we need to add the target for the \texttt{publicX} executable, which will be built from the object files.
+
+\begin{lstlisting}[language=bash]
+publicX: publicX.o puzzles.o
+	gcc-o publicX publicX.o puzzles.o
+
+publicX.o: publicX.c puzzles.h
+	gcc -c publicX.c 
+	
+puzzles.o: puzzles.c puzzles.h
+	gcc -c puzzles.c
+\end{lstlisting}
+
+Notice how we're using the \texttt{-o} flag when calling gcc for the executable. Make sure that you don't miss that step. When you're using \texttt{gcc} on C script files and header files, use the \texttt{-c} flag as you usually would. When you're using \texttt{gcc} on object files, make sure to use the \texttt{-o} flag.\newline
+
+Now, let's take a look at a more practical example. Namely, the \texttt{Makefile} included with project 3. By analyzing this, you should be more or less set to create a \texttt{Makefile} for project 4.\newline
+
+However, and this is important, don't use the actual targets and rules in project 3's \texttt{Makefile} as examples to copy over to project 4. They make use of \textbf{implicit rules, which are not allowed in project 4}.\newline
+
+Instead, I want to talk about the other features of the project 3 \texttt{Makefile}, which you'll find indispensable when creating your own \texttt{Makefile} for project 4.\newline
+
+First, notice the lines for \texttt{CC, CFLAGS, and PROGS}.
+
+\begin{lstlisting}[language=C]
+CC = gcc
+CFLAGS = -ansi -Wall -g -O0 -Wwrite-strings -Wshadow \
+         -pedantic-errors -fstack-protector-all 
+PROGS = user_interface public01 public02 public03 public04 public05 \
+	public06 public07 public08 public09
+\end{lstlisting}
+
+This is basically like \#define, but for your \texttt{Makefile}. Whenever you invoke these keywords later in your file, you'll get the lengthy version on the right side of their corresponding equals sign. You'd invoke them like the following example from the same \texttt{Makefile}.
+
+\begin{lstlisting}[language=C]
+all: $(PROGS)
+\end{lstlisting}
+
+Here, you can see that the \texttt{all} target refers to everything included in the \texttt{PROGS} macro that was defined above. This is another keyword to remember- make sure to include a target for \texttt{all} that basically compiles everything in your project. This keyword marks the stuff that'll be compiled if the user just types \texttt{make} with nothing else after it- in other words, it's where you'd setup the default \texttt{make} process.\newline
+
+Let's talk about the other special targets in the project 3 \texttt{Makefile}, as I've spliced from the file below.
+
+\begin{lstlisting}[language=C]
+.PHONY: all clean
+
+all: $(PROGS)
+
+clean:
+	rm -f *.o $(PROGS) *.tmp
+
+\end{lstlisting}
+
+We've already talked about \texttt{all}, so let's address \texttt{clean} and \texttt{.PHONY}. First, \texttt{clean}- this means exactly what you think it means. The role of the clean target is to remove all the stuff that \texttt{make} created when it was run. In other words, if you run \texttt{make clean}, it's expected that you have code in your \texttt{Makefile}'s \texttt{clean} target that performs the appropriate \texttt{rm} command on all the files that it would have otherwise been producing. This includes all object files and executables, and in the case of this implementation, all temporary files (\texttt{.tmp}).\newline
+
+\texttt{.PHONY} is also pretty simple once you understand what it means- it's sometimes the case where you'd (albeit, making a terrible design choice) have an executable file named 'clean', or 'all', and you'd want to make targets to produce them. In that case, you would like the \texttt{make} utility to know that those are, in fact, targets for executables that you're looking to produce, and not the rules you've defined for the special keywords \texttt{all} and \texttt{clean}. In other words, you're just telling \texttt{Make} to ignore your silly file naming and to continue with business as usual. Some more common tags that could be put in your \texttt{.PHONY} rule include the following: \texttt{install, info, check, distclean, TAGS}. You are welcome to google them if you'd like, but we won't see any of those other tags in 216.
+
 
 \subsection{Struct Abstraction}
 
