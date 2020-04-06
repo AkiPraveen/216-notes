@@ -2563,13 +2563,310 @@ For problems 1-5 on the worksheet, you'll find the reasoning in the 'Converting 
 
 Simply understanding the logic behind the bitwise operations here isn't enough. Making sure you understand how to actually implement the bitwise operators in C is the key. Additionally, if you practice enough conversions from decimal into other number systems, and then enough from other number systems back into decimal in order to understand both of these processes, I'd say you're in great shape for the exam.
 
+\section{Week 9}
+
+\subsection{Introduction to Assembly}
+
+This week, we're going to start talking about even lower-level programming: Assembly. It can be argued that Assembly is about the closest you can get to the hardware when you're writing industry-standard code for a computer or embedded system, and for good reason. It's extremely simple in nature, which is both a blessing and a curse. It's great in the sense that, from an educational point of view, you'll only be faced down with very simple programming problems to solve, ranging from simple arithmetic to basic recursion problems. It's not so great in the sense that you'll find yourself a little miffed when previously trivial tasks like printing a string with a concatenated integer, or a recursive call, suddenly become a little painful. One thing is for sure- Assembly is truly 'low-level programming'. \textit{Why use many features when few feature do trick?}
+
+\subsubsection{MIPS Assembly}
+
+Specifically, we'll be learning MIPS Assembly. The type of Assembly that 216 sections learn tends to switch from semester to semester, but MIPS is highly useful in its own right. If you were curious, MIPS stands for Microprocessor without Interlocked Pipeline Stages, and was created by a company that shared that same name. Popular systems that took advantage of MIPS or MIPS derivatives ranged from routers, internet modems, other embedded systems, and even the Nintendo N64.\newline
+
+Basically, thanks to its popularity in the early days of computing, its influence on future RISC (Reduced Instruction Set Computer) architectures, and its relative ease to understand, we're fortunate enough to cover it in 216.
+
+\subsubsection{System Memory Structure}
+
+Before we get started, I think it's important to point out this diagram from lecture. Since we are programming on a very low level, understanding how the memory that we're toying with is structured is a great way to solidify our understanding of MIPS Assembly as a whole.\newline
+
+This diagram, from Uppsala University (\texttt{it.uu.se}) is a perfect way to think of the memory that MIPS will be dealing with. If you haven't already, I would highly recommend checking out Prof. Shankar's video on QTSpim, where he talks us through what I'm about to go over.\newline
+
+As a side note, you've probably already seen this diagram, but I'm going to recreate it for you going from the \textbf{lowest address at the top} down to the \textbf{highest address at the bottom}, like they have it displayed in \texttt{qtspim}, for consistency's sake.\newline
+
+{
+\centering
 
 
 
 
 
+\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+
+\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+%uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
+
+%Shape: Rectangle [id:dp25416966228394255] 
+\draw   (116.67,12) -- (454.33,12) -- (454.33,292) -- (116.67,292) -- cycle ;
+%Shape: Rectangle [id:dp7905442520555432] 
+\draw  [fill={rgb, 255:red, 80; green, 227; blue, 194 }  ,fill opacity=1 ] (116.67,12) -- (454.33,12) -- (454.33,35.33) -- (116.67,35.33) -- cycle ;
+%Shape: Rectangle [id:dp15378002183259654] 
+\draw  [fill={rgb, 255:red, 248; green, 231; blue, 28 }  ,fill opacity=1 ] (116.67,35.33) -- (454.33,35.33) -- (454.33,79.33) -- (116.67,79.33) -- cycle ;
+%Shape: Rectangle [id:dp8855964545796089] 
+\draw  [fill={rgb, 255:red, 248; green, 231; blue, 28 }  ,fill opacity=1 ] (116.67,79.33) -- (454.33,79.33) -- (454.33,123.33) -- (116.67,123.33) -- cycle ;
+%Shape: Rectangle [id:dp7116959279006391] 
+\draw  [fill={rgb, 255:red, 248; green, 231; blue, 28 }  ,fill opacity=1 ] (116.67,123.33) -- (454.33,123.33) -- (454.33,161.33) -- (116.67,161.33) -- cycle ;
+%Shape: Rectangle [id:dp6624445156874957] 
+\draw  [fill={rgb, 255:red, 248; green, 231; blue, 28 }  ,fill opacity=1 ] (116.67,194) -- (454.33,194) -- (454.33,232) -- (116.67,232) -- cycle ;
+%Shape: Rectangle [id:dp7618368015684445] 
+\draw  [fill={rgb, 255:red, 80; green, 227; blue, 194 }  ,fill opacity=1 ] (116.67,263.33) -- (454.33,263.33) -- (454.33,292) -- (116.67,292) -- cycle ;
+%Shape: Rectangle [id:dp1493181266727368] 
+\draw  [fill={rgb, 255:red, 80; green, 227; blue, 194 }  ,fill opacity=1 ] (116.67,232) -- (454.33,232) -- (454.33,263.33) -- (116.67,263.33) -- cycle ;
+%Shape: Rectangle [id:dp8007385016550638] 
+\draw  [fill={rgb, 255:red, 248; green, 231; blue, 28 }  ,fill opacity=0.16 ] (116.67,160.67) -- (454.33,160.67) -- (454.33,194) -- (116.67,194) -- cycle ;
+%Up Arrow [id:dp7493047182637006] 
+\draw  [fill={rgb, 255:red, 208; green, 2; blue, 27 }  ,fill opacity=1 ] (292.92,165.6) -- (278.08,174.67) -- (263.25,165.6) -- (270.67,165.6) -- (270.67,152) -- (285.5,152) -- (285.5,165.6) -- cycle ;
+%Up Arrow [id:dp34905801452398144] 
+\draw  [fill={rgb, 255:red, 208; green, 2; blue, 27 }  ,fill opacity=1 ] (263.67,189.07) -- (278.5,180) -- (293.33,189.07) -- (285.92,189.07) -- (285.92,202.67) -- (271.08,202.67) -- (271.08,189.07) -- cycle ;
+
+% Text Node
+\draw (118.67,15) node [anchor=north west][inner sep=0.75pt]   [align=left] {Reserved by Kernel};
+% Text Node
+\draw (118.67,48) node [anchor=north west][inner sep=0.75pt]   [align=left] {Text (code that you're actually written)};
+% Text Node
+\draw (461.33,4.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont 0x00000000}};
+% Text Node
+\draw (462,28.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont 0x04000000}};
+% Text Node
+\draw (460,70.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont 0x10000000}};
+% Text Node
+\draw (118.67,93.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {Static Data (known at compile time)};
+% Text Node
+\draw (118.67,126.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {Heap (dynamically allocated memory)};
+% Text Node
+\draw (120,210.67) node [anchor=north west][inner sep=0.75pt]   [align=left] {Stack (important- we'll talk about this later!)};
+% Text Node
+\draw (119.33,242) node [anchor=north west][inner sep=0.75pt]   [align=left] {Kernel Text (can be viewed in qtspim)};
+% Text Node
+\draw (119.33,271.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {Kernel Data (can be viewed in qtspim)};
+% Text Node
+\draw (461.33,216.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont 0x80000000}};
+% Text Node
+\draw (461.33,251) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont 0x90000000}};
+% Text Node
+\draw (462,280.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont 0xffffffff}};
 
 
+\end{tikzpicture}
+
+\textit{(Lower in the diagram = higher memory address)}\newline
+
+
+}
+
+The reason I've included this is to go hand in hand with the explanations that are to follow. You'll notice a few key similarities to the machine diagram I posted earlier, from one of the first few weeks. This is because C was essentially built with Assembly as the basis; since Assembly preceded C, a lot of it was used as the basis for C and future languages. Many precedents set by Assembly are still evident in the modern languages of today.
+
+\subsection{Running Assembly: Using \texttt{qtspim} and \texttt{spim}}
+
+There are a few ways to run assembly, but we will be using \texttt{spim}, a simulator that runs MIPS assembly programs. \texttt{spim} also provides some basic debugging features, which I highly recommend getting accustomed to as you start to actually write MIPS code.\newline
+
+Additionally, we use a GUI-based version of \texttt{spim} called \texttt{qtspim}, which incidentally provides a far more visually appealing representation of all the useful data that \texttt{spim} tracks. For the purpose of writing code and debugging, I highly recommend working with \texttt{qtspim} here.\newline
+
+\subsubsection{Installing \texttt{qtspim}}
+
+You can use \texttt{spim} and \texttt{qtspim} on Grace, or, if you want to run your Assembly code locally, you're welcome to get a local installation going. If you don't want to use \texttt{qtspim} via X-windows, I suggest you download it to your machine from this location:\newline
+
+\texttt{\href{https://sourceforge.net/projects/spimsimulator/files/}{https://sourceforge.net/projects/spimsimulator/files/}}\newline
+
+Personally, I recommend using \texttt{qtspim} locally and downloading/uploading files to grace when necessary. It's a lot faster and less frustrating to use.\newline
+
+\subsubsection{First Look at \texttt{qtspim}'s Interface}
+
+When you first launch \texttt{qtspim} (For the purpose of what we're about to work through, I highly recommend you grab \texttt{example\_0.s} from the location below.\newline
+
+\texttt{216public/lecture\_examples/week8/Assembly-MIPS-2-Code.}\newline
+
+First, let's look at what \texttt{qtspim} has to offer- but also what we don't need from it right now. When you run \texttt{qtspim example\_0.s} from either Grace or your local system, you'll be bombarded with a bunch of data. Let's clear up some of that confusion.\newline
+
+First off, you'll see a little tab that shows you your floating point registers. I'm assuming that we've covered the concept of registers and other basic Assembly content in lecture, so I'm going to just skip to telling you that we don't need the Floating Point registers right now. We're interesting in storing data + viewing data from the integer registers, so let's only keep that tab open. (Check the diagram below if you need any help).\newline
+
+Additionally, there's data that's in the Kernel space that we don't really care about for now either. Specifically, this is the data that we colored teal in the diagram above. Head over to the \textbf{Window} menubar option (again, highlighted in the below diagram) and uncheck the boxes for 'Kernel Data' and 'Kernel Text'. We're more interested in the User Data and User Text, which is the stuff that we provide.\newline 
+
+{
+\centering
+
+
+
+\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+
+\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+%uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
+
+%Image [id:dp10873138490839307] 
+\draw (344.61,147.67) node  {\includegraphics[width=286.92pt,height=221.5pt]{img/qtspim1.png}};
+%Straight Lines [id:da8419523950188837] 
+\draw    (73,68.67) -- (163.77,38.63) ;
+\draw [shift={(165.67,38)}, rotate = 521.69] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da06871503564513304] 
+\draw    (546.33,148.67) -- (312.76,22.95) ;
+\draw [shift={(311,22)}, rotate = 388.28999999999996] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+
+% Text Node
+\draw (0.67,71.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {We won't be needing\\these anytime soon.\\Go ahead and close\\this view.};
+% Text Node
+\draw (548.33,151.67) node [anchor=north west][inner sep=0.75pt]   [align=left] {Open this menu to\\remove all the\\other 'extra' views\\that we won't need\\for now.};
+
+
+\end{tikzpicture}\newline
+
+
+}
+
+Now that we've got the UI configured for our needs, let's explore how qtspim can give us more valuable insight into what our code is doing. First, let's examine what's going on in the 'User Text' tab on \texttt{qtspim}. This shows us our code at a glance, and it's exactly the same as the 'User Text' block in the diagram I provided above. However, it gives us just a little more than that. Let's focus in on a random line from the User Text section in \texttt{qtspim}.\newline\newline
+
+{
+\centering
+
+
+
+\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+
+\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+%uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
+
+%Straight Lines [id:da19867976067670345] 
+\draw [color={rgb, 255:red, 144; green, 19; blue, 254 }  ,draw opacity=1 ]   (355.67,74) -- (647.67,74) ;
+%Straight Lines [id:da6150885554955349] 
+\draw [color={rgb, 255:red, 144; green, 19; blue, 254 }  ,draw opacity=1 ]   (508.33,172.67) -- (507.03,84) ;
+\draw [shift={(507,82)}, rotate = 449.16] [color={rgb, 255:red, 144; green, 19; blue, 254 }  ,draw opacity=1 ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da4876031577213086] 
+\draw [color={rgb, 255:red, 65; green, 117; blue, 5 }  ,draw opacity=1 ]   (175,74) -- (283.67,74) ;
+%Straight Lines [id:da13731004918503975] 
+\draw [color={rgb, 255:red, 65; green, 117; blue, 5 }  ,draw opacity=1 ]   (234.33,238.67) -- (230.38,84.67) ;
+\draw [shift={(230.33,82.67)}, rotate = 448.53] [color={rgb, 255:red, 65; green, 117; blue, 5 }  ,draw opacity=1 ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da8916910085429156] 
+\draw [color={rgb, 255:red, 139; green, 87; blue, 42 }  ,draw opacity=1 ]   (92.33,74) -- (159.67,74) ;
+%Straight Lines [id:da7274101432312404] 
+\draw [color={rgb, 255:red, 139; green, 87; blue, 42 }  ,draw opacity=1 ]   (126.33,108.67) -- (126.33,81.33) ;
+\draw [shift={(126.33,79.33)}, rotate = 450] [color={rgb, 255:red, 139; green, 87; blue, 42 }  ,draw opacity=1 ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da12542541209218405] 
+\draw [color={rgb, 255:red, 208; green, 2; blue, 27 }  ,draw opacity=1 ]   (47.67,168) -- (48.32,81.33) ;
+\draw [shift={(48.33,79.33)}, rotate = 450.43] [color={rgb, 255:red, 208; green, 2; blue, 27 }  ,draw opacity=1 ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da9635315027442365] 
+\draw [color={rgb, 255:red, 208; green, 2; blue, 27 }  ,draw opacity=1 ]   (13.67,74) -- (83,74) ;
+
+% Text Node
+\draw (8,52) node [anchor=north west][inner sep=0.75pt]   [align=left] {{\fontfamily{pcr}\selectfont [00400034] 20440001 \ addi \$4, \$2, 1 \ \ \ \ \ \ ; 17: add \$a0, \$v0, 1 \# \$a0 = input + 1 }};
+% Text Node
+\draw (408,174.67) node [anchor=north west][inner sep=0.75pt]   [align=left] {\textcolor[rgb]{0.56,0.07,1}{MIPS code that you've written}};
+% Text Node
+\draw (144,247.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {\textcolor[rgb]{0.25,0.46,0.02}{Actual Assembly instruction}};
+% Text Node
+\draw (60,113.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {\textcolor[rgb]{0.55,0.34,0.16}{Machine translation}\\\textcolor[rgb]{0.55,0.34,0.16}{of Assembly code}};
+% Text Node
+\draw (12,176.67) node [anchor=north west][inner sep=0.75pt]   [align=left] {\textcolor[rgb]{0.82,0.01,0.11}{Address at which}\\\textcolor[rgb]{0.82,0.01,0.11}{operation will be}\\\textcolor[rgb]{0.82,0.01,0.11}{executed}};
+
+
+\end{tikzpicture}\newline
+
+
+}
+
+Only after the semicolon does it show you the code your wrote. To the left of the semicolon, delimited by whitespace, \texttt{qtspim} also shows you: (in order from right to left)\newline
+
+\begin{itemize}
+	\item The actual Assembly instruction that your code becomes- it has a lot of similarities to your written Assembly, so feel free to make comparisons between both columns.
+	\item The machine instruction that it becomes- slightly more indecipherable, but this is what's being transmitted to the machine in a much more raw sense.
+	\item In square brackets, the memory address that this operation executes on. Yet another artifact of us being at the lowest level of the computer system.
+\end{itemize}
+
+The User Data section is a lot less interesting. If you take a look there right now, you'll see that the program has allocated the string 'Bye Bye', padded with newlines. This is where any data that you allocate statically will show up, e.g. strings that you wish to allocate and mess with.
+
+\subsubsection{Working Through \texttt{example\_0.s}}
+
+There are ways to execute your code in the command line version of this software, just called \texttt{spim}, but I think that the graphical version is a must, especially if you're learning this for the first time. Again, if your connection is not fast enough or you're having other problems with the X-window version of \texttt{qtspim} on Grace, I highly recommend a local installation of \texttt{qtspim}.\newline
+
+Go ahead and begin execution of the \texttt{example\_0.s} (location mentioned above). The easiest way to do this is using the 'step' option to get through the pseudo-instructions. Here's the button I'm talking about:\newline
+
+{
+\centering
+
+
+
+\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+
+\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+%uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
+
+%Image [id:dp9755553090645552] 
+\draw (340.35,234.38) node  {\includegraphics[width=404.03pt,height=80.06pt]{img/qtspim2.png}};
+%Shape: Rectangle [id:dp6048699266792336] 
+\draw  [color={rgb, 255:red, 255; green, 0; blue, 0 }  ,draw opacity=1 ] (197,212) -- (227.5,212) -- (227.5,228.25) -- (197,228.25) -- cycle ;
+%Straight Lines [id:da05231751219991798] 
+\draw [color={rgb, 255:red, 255; green, 0; blue, 0 }  ,draw opacity=1 ]   (161,151.75) -- (207.75,210.19) ;
+\draw [shift={(209,211.75)}, rotate = 231.34] [color={rgb, 255:red, 255; green, 0; blue, 0 }  ,draw opacity=1 ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Shape: Rectangle [id:dp236835656014867] 
+\draw  [color={rgb, 255:red, 126; green, 211; blue, 33 }  ,draw opacity=1 ] (247.5,212.5) -- (266,212.5) -- (266,228.25) -- (247.5,228.25) -- cycle ;
+%Straight Lines [id:da38979108665986606] 
+\draw [color={rgb, 255:red, 79; green, 147; blue, 0 }  ,draw opacity=1 ]   (352.5,90.75) -- (257.75,209.69) ;
+\draw [shift={(256.5,211.25)}, rotate = 308.53999999999996] [color={rgb, 255:red, 79; green, 147; blue, 0 }  ,draw opacity=1 ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+
+% Text Node
+\draw (63.5,96.5) node [anchor=north west][inner sep=0.75pt]   [align=left] {\textcolor[rgb]{1,0,0}{These will move through the}\\\textcolor[rgb]{1,0,0}{program instantly, don't use}\\\textcolor[rgb]{1,0,0}{for debugging}};
+% Text Node
+\draw (326.5,31.5) node [anchor=north west][inner sep=0.75pt]   [align=left] {\textcolor[rgb]{0.25,0.46,0.02}{This will step through}\\\textcolor[rgb]{0.25,0.46,0.02}{your program; it's what}\\\textcolor[rgb]{0.25,0.46,0.02}{we want}};
+
+
+\end{tikzpicture}\newline
+
+}
+
+As you step through the program, take note of the changes in the registers under the 'Int Registers' tab. You'll be able to see these change in real time, as the program executes, and you'll see just how each of these operations work.\newline
+
+At the end of the day, this program performs 3 notable tasks, each with nuances that I'd like you to take note of as you step through it within \texttt{qtspim}. The three main tasks that this program accomplishes are:\newline
+
+\begin{itemize}
+	\item It reads an integer from the console.
+	\begin{itemize}
+		\item Note that it stores the integer in a certain register, and when you check the Int Registers, it stores the value in \textbf{Hexadecimal}. Lots of mistakes arise during debugging when you misinterpret values here, so don't forget this little fact.
+	\end{itemize}
+	\item It adds one to the integer, then prints the result to the console.
+	\begin{itemize}
+		\item Note that you're adding a value using the \texttt{addi} command. In Assembly, when we add a number that we haven't previously declared or stored in a variable, we call it an \textbf{immediate}. Here, this command is the short form for 'add immediate'.
+	\end{itemize}
+	\item it prints the string 'Bye Bye' to the console.
+	\begin{itemize}
+		\item At this point, you may be seeing a pattern when you want to perform an advanced operation, like reading an integer, or printing said integer. First, you want to make sure the appropriate code (i.e. 1 in this case) is in the \texttt{\$v0} register. Next, you want to prepare any other variables you may need for this operation, usually putting them in a specific register. In our case, we're also loading the address of \texttt{str1} into \$a0. Once the necessary preparations have been made, all we have to do is invoke \texttt{syscall}, and the rest is taken care of for us.
+	\end{itemize}
+\end{itemize}
+
+It's worth mentioning that, like we saw in this example, there are very clear limitations to Assembly from the outset. For advanced operations like printing a String, we have to go with these seemingly roundabout \texttt{syscall}-based operations in order to get it done. In this example, we saw two examples of how \texttt{syscall} can be used. There are a few more things that syscall can do, which I can list in this handy table.\newline
+
+{
+
+\begin{center}
+ \begin{tabular}{||c c c c||} 
+ \hline
+ Operation & \texttt{syscall} Code & Arguments + Locations & Result \\ [0.5ex] 
+ \hline\hline
+ \texttt{print\_int} & 1 & \texttt{\$a0} (integer) & NA \\ 
+ \hline
+ \texttt{print\_float} & 2 & \texttt{\$f12} (float) & NA \\
+ \hline
+ \texttt{print\_double} & 3 & \texttt{\$f12} (double) & NA \\
+ \hline
+ \texttt{print\_string} & 4 & \texttt{\$a0} (string) & NA \\
+ \hline
+ \texttt{read\_int} & 5 & NA & Integer in \texttt{\$v0} \\
+ \hline
+ \texttt{read\_float} & 6 & NA & Float in \texttt{\$f0} \\
+ \hline
+ \texttt{read\_double} & 7 & NA & Double in \texttt{\$f0} \\
+ \hline
+ \texttt{read\_string} & 8 & \texttt{\$a0} (address of buffer), \texttt{\$a1} (length of string) & String starting at \texttt{\$a0} \\
+ \hline
+ \texttt{sbrk} & 9 & \texttt{\$a0} (amount) & Address in \texttt{\$a0} \\
+ \hline
+ \texttt{exit} & 10 & NA & NA \\
+ \hline  
+ 
+\end{tabular}
+\end{center}
+
+}
+
+The only instruction that may not immediately seem intuitive to you is the \texttt{sbrk} syscall code. Don't worry too much about this one for now, but it's basically just \texttt{malloc()} for MIPS.\newline
+
+Remember that Assembly wasn't created with our present-day programming paradigms in mind. In order to get around the limitations of Assembly, I'd recommend thinking back to the need it was built to fulfill in the first place- extremely low-level programming.
 
 
 
