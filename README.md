@@ -1,6 +1,6 @@
 # CMSC216 - Spring 2020
 
-Course notes for Dr. Ilchul Yoon's CMSC216 at the University of Maryland, created by Akilesh Praveen.
+Course notes for Dr. Ilchul Yoon and Dr. A.U. Shankar's Spring 2020 offering of CMSC216 at the University of Maryland, created by Akilesh Praveen.
 
 Created as a supplementary resource- a compiled set of my notes and insights from discussion sections along with tips and tricks for projects.
 
