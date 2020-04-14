@@ -13,6 +13,7 @@ Created as a supplementary resource- a compiled set of my notes and insights fro
 * Week 6
 * Week 7
 * Week 8
-* Week 9 (In Progress)
+* Week 9
+* Week 10 (In Progress)
 
 Due to the university closure and temporary migration to online classes, I will be updating this repository more frequently for the convenience of the students.

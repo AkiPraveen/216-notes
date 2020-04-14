@@ -2868,8 +2868,61 @@ The only instruction that may not immediately seem intuitive to you is the \text
 
 Remember that Assembly wasn't created with our present-day programming paradigms in mind. In order to get around the limitations of Assembly, I'd recommend thinking back to the need it was built to fulfill in the first place- extremely low-level programming.
 
+\section{Week 10}
 
+\subsection{More on MIPS}
 
+You'll find that we can do a lot of things with MIPS, and as you move through the exercises that we get, you'll figure out the nuances that come along with these tasks.\newline
+
+You'll notice that with MIPS, we pay a lot more attention to the stack than we did when we were writing in C. This is because we usually need to mess around with more than a few variables at once, and an excellent reliable way to do that is by leveraging the stack.
+
+\subsubsection{Function Implementation in C vs Assembly}
+
+First of all, we will cover function implementation, and the differences between how this is done in C and how this is done in Assembly. I'll be recapping the examples in the \textbf{Week 9 - Assembly Slides III} lectures, so feel free to follow along there.\newline
+
+In \textbf{C}, when a function is called, you have a pretty commonplace process. Local variables within that function are stored on the stack, code is executed, and a return value is sent back to the caller. This is exactly what we've been learning so far- shouldn't be anything new.\newline
+
+In \textbf{Assembly (MIPS)}, we're looking at a similar process in concept, yet a little more fleshed out than what we explored in C. Before a function is called, we first put the arguments on the stack and set aside some space for the function's return value on the stack. Next, we jump to our actual function implementation. Within the actual function, we'll put the local variables on the stack (just as we did in C), execute the code (during this time, accessing our arguments and local variables), then we'll put our return value in the appropriate space on the stack. Finally, when we exit the function call, we'll grab the value of the return value from the stack.\newline
+
+This is a pretty high level explanation of how functions are implemented, but it's important to keep this all in mind as we tackle larger problems. I'd say the most important takeaway is to understand that we'll be interacting with the stack a lot more in a very basic sense- things that we used to take for granted, like being able to create as many variables as we wanted in whichever scope was most convenient for us, will probably be a lot harder to do in MIPS.
+
+\subsubsection{Misc. MIPS Takeaways}
+
+Here are some key takeaways I would suggest remembering as we progress further with MIPS. These are tidbits from the MIPS lecture that I think are highly useful as we move along with this stuff.\newline
+
+The \textbf{Stack Pointer} and \textbf{Frame Pointer} are new things that we have to deal with here. It's important to know the difference between them.
+
+\begin{itemize}
+	\item The \textbf{stack pointer}, \texttt{\$sp}, is how we keep track of the top of the stack. As our program continues to put stuff onto the stack, the stack pointer simply points to the next vacant space on the stack; to the newest free memory location.
+	\item The \textbf{frame pointer}, \texttt{\$fp}, is how we keep track of where our return value will be on the stack. Unlike the stack pointer, this stays the same throughout a function call. As such, offsetting from this pointer is how we access arguments, the return value space, and local vars.
+\end{itemize}
+
+Let's also talk a little about MIPS conventions. In particular, you'll see programs structured in a certain way throughout the MIPS instruction you receive here.
+
+\begin{itemize}
+	\item The \textbf{prologue} is the region of your MIPS code where you make room on the stack and store your register values. It's where you'll be performing your 'setup' work.
+	\item The \textbf{epilogue} is where you'll get those values back from the stack, and go ahead and deallocate room that you've added to the stack. It's analogous to 'cleanup' work.
+	\item The \textbf{body} of your code is where you'll be performing the actual stuff- 
+\end{itemize}
+
+Additionally, I've been talking a lot about using the stack as a way to pass in function arguments. Technically, the MIPS convention is to use certain registers to pass values in for your arguments. However, some questions and prompts in this course may require you to \textbf{pass all arguments on the stack}, so make sure to keep an eye out.
+
+\begin{itemize}
+	\item \textbf{Function Arguments} will be passed in via registers \texttt{\$a0} through \texttt{\$a3}, and if more space ends up being needed, the stack.
+	\item The \textbf{Return Value} will usually be found in registers \texttt{\$v0} and \texttt{\$v1}. If more space ends up being needed here, you'll again have to look to the stack. 
+\end{itemize}
+
+\subsubsection{Caller-saved vs. Callee-saved}
+
+As you learn about different registers, there's a key point to be noted about the difference between Caller-Saved and Callee-Saved registers. There's a handy guide on the lecture slides (I'm thinking of putting one on this notes document too) that tells you which of the registers are Caller/Callee saved, but make sure you use the appropriate one for the case you're dealing with.\newline
+
+\begin{itemize}
+	\item If registers are \textbf{caller-saved}, functions can freely modify those registers, but if those functions call \textit{other functions}, they shouldn't assume that those registers no longer hold the values they set. In other words, if the original function that modified the caller-saved registers calls another function, it should assume that the contents of those registers have now been messed with and are therefore unusable.\textbf{A.k.a. 'temporary registers'; they won't be preserved across different procedure calls.}
+	\item If registers are \textbf{callee-saved}, functions that are modifying them are allowed to call another function and know that those registers haven't been messed with, but in turn, they also need to do their due diligence and ensure that these registers retain their original values before returning. \textbf{A.k.a. 'saved registers'; they will be preserved across procedure calls.}
+	
+\end{itemize}
+
+It may seem more confusing than it is, but just remember this: Caller-saved registers are not preserved across \textit{procedure} (or as we know them, function) calls, while Callee-saved registers are preserved across procedure calls.
 
 \section{Closing Thoughts}
 
