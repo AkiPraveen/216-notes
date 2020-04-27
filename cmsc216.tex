@@ -34,6 +34,7 @@
  
 \usepackage{listings}
 \usepackage{xcolor}
+\usetikzlibrary{patterns}
  
 \definecolor{codegreen}{rgb}{0,0.6,0}
 \definecolor{codegray}{rgb}{0.5,0.5,0.5}
@@ -2923,6 +2924,434 @@ As you learn about different registers, there's a key point to be noted about th
 \end{itemize}
 
 It may seem more confusing than it is, but just remember this: Caller-saved registers are not preserved across \textit{procedure} (or as we know them, function) calls, while Callee-saved registers are preserved across procedure calls.
+
+\section{Week 11}
+
+\subsection{Process Control- The Computer as a Restaurant}
+
+At the end of the day, this is a systems class. One of the big concepts that we should take some time to understand is the idea of processes, and how those processes affect how we build programs. It may be a little weird at first, and very tempting to confuse them with threads (given that we took a look at them at the end of CMSC132), but I assure you that the two are very different. Here's some stuff that I'd say is very key to remember when learning about and studying for process control material.\newline
+
+It turns out that we haven't seen \textit{this} before, but we've seen fairly similar content, and you may already be thinking in terms of processes when you imagine how computers execute programs. Understanding process control is key to understanding how a computer functions under the hood.\newline
+
+This is meant to be supplementary material, in case the slides and lecture haven't done it for you. As such, I'm going to employ the use of a 'computer as a restaurant' metaphor that I've put together. I've labeled the restaurant analogy sections in case you want to skip over them, but hopefully they help if this process business is getting too abstract to understand.
+
+\subsection{What's a Process? (Restaurant Analogy I)}
+
+This is a word we haven't seen before. Again, the last thing you want to do is get a process confused with a thread.
+If you want to get more information on the difference between those, go ahead and take a look at the example in lecture, when they go over the \texttt{ProcessControlA} slides.\newline
+
+Let's use an analogy to better understand processes, and their relation to programs. If a \textbf{program} is like a \textbf{recipe} for a particular order at our restaurant, a \textbf{process} is the \textbf{cook} who follows that recipe. Just as you can have many cooks preparing food from the same recipe, you can have multiple processes running the same program. For the sake of our analogy, let's pretend that once a cook picks up a recipe, they'll be the only ones working on it until it's finished. In other words, every cook has a single recipe.\newline
+
+Now how will those orders come to us? This is where the shell comes in. When the user types the name of a program into the shell, think of it like when you tell your waiter an order. What happens when you do that? Your waiter will go to the kitchen, and give a ticket with your order to the chefs. In a similar way, the \textbf{shell}, like a waiter, will take that order to the kitchen and assign the recipe (your actual program) to a cook (a process) and they'll get started on it. As such, when you type a program name into the shell, it kicks off a new process that will execute your program.\newline
+
+Now, can we say that if you ordered a Spaghetti House Special and if your date ordered a Spaghetti House Special, your orders will be the exact same?  What if your date asked for parmesan cheese sprinkled on top and you absolutely hate that stuff? Furthermore, if the table next to you comes in 15 minutes later and orders the same thing, would you want them getting their Spaghetti House Special first? You'd probably want a way to make sure that your order is yours and yours only. Just like we need a way to keep track of each order being prepared, we also need a way to keep track of every process, just so we can keep tabs on them. Each process is assigned a special \textbf{Process ID}, or \textbf{PID}, to make them easily identifiable and trackable.
+
+\subsection{Multitasking (Restaurant Analogy II)}
+
+Let's say that the restaurant is pretty packed tonight, and a bunch of people have put in their orders. Your assumption is that all the cooks are in there, making everyone's food at the same time, but little do you know, this is a very special kitchen.\newline
+
+Inside, there is only 1 total gas burning stove, one sink, and one set of pots and pans. The fact of the matter here is, only one cook can be working on their recipe at a time, and all the other cooks need to stand by. Horribly inefficient as this may seem, it's very similar to a computer. The fact is, a singular CPU can only handle a process at a time (we'll touch on multi-core processing in a bit), so if your system only has 1 core, it really only is doing one task at a time.\newline
+
+However, these cooks are highly skilled. We're talking Michelin-star level- One cook will use the cooking station for a few minutes, then hand off the station to another cook for a few minutes so they can work for a bit, then take the station back. In a few minutes, they may hand the station off again to yet another cook. No one cook takes the cooking station for very long, and they end up working so fast that it seems like they're working in parallel.\newline
+
+Similarly, a single CPU can give us the illusion of parallel processing by performing a similar technique known as \textbf{time slicing}. By allowing each process to use the processor for \textit{miniscule} bits of time, one after the other, the result was a bunch of processes that finished at relatively the same time. This technology is pretty old, but hey, it works.\newline
+
+Let's tie this back together with our restaurant analogy. Let's say we continued with this seemingly unorthodox time slicing model, and we had 3 cooks preparing 3 different dishes, all of which were ordered one after the other by a family of 3 having dinner. Here are the details.\newline
+
+\begin{itemize}
+	\item \textbf{Spaghetti House Special} - \textit{No parmesan!} - 4 mins prep time
+	\item \textbf{Pasta Salad} - \textit{Quick and easy} - 2 mins prep time
+	\item \textbf{Minestrone Soup} - \textit{Difficult to pronounce} - 3 mins prep time
+\end{itemize} 
+
+It's important to note that this was ordered by a family, and as such, each of these dishes would be better if they came out at the same time. Think of it this way, as we bridge the gap between our analogy and these dishes. Think of each order as a process. If you're listening to music and you move your Spotify window across the screen, would you rather have your music stop abruptly while you move your window, then resume when it's done? Or would you suffer nanoseconds (or less!) of lag and have your music and window move happen at (what appears to us humans) the same time?\newline
+
+Let's take a look at how this food comes out with and without time slicing.\newline
+
+{
+\centering
+
+
+
+% Pattern Info
+ 
+\tikzset{
+pattern size/.store in=\mcSize, 
+pattern size = 5pt,
+pattern thickness/.store in=\mcThickness, 
+pattern thickness = 0.3pt,
+pattern radius/.store in=\mcRadius, 
+pattern radius = 1pt}
+\makeatletter
+\pgfutil@ifundefined{pgf@pattern@name@_04ajd8fkc}{
+\pgfdeclarepatternformonly[\mcThickness,\mcSize]{_04ajd8fkc}
+{\pgfqpoint{0pt}{0pt}}
+{\pgfpoint{\mcSize+\mcThickness}{\mcSize+\mcThickness}}
+{\pgfpoint{\mcSize}{\mcSize}}
+{
+\pgfsetcolor{\tikz@pattern@color}
+\pgfsetlinewidth{\mcThickness}
+\pgfpathmoveto{\pgfqpoint{0pt}{0pt}}
+\pgfpathlineto{\pgfpoint{\mcSize+\mcThickness}{\mcSize+\mcThickness}}
+\pgfusepath{stroke}
+}}
+\makeatother
+
+% Pattern Info
+ 
+\tikzset{
+pattern size/.store in=\mcSize, 
+pattern size = 5pt,
+pattern thickness/.store in=\mcThickness, 
+pattern thickness = 0.3pt,
+pattern radius/.store in=\mcRadius, 
+pattern radius = 1pt}
+\makeatletter
+\pgfutil@ifundefined{pgf@pattern@name@_x6lyfh0ey}{
+\pgfdeclarepatternformonly[\mcThickness,\mcSize]{_x6lyfh0ey}
+{\pgfqpoint{0pt}{-\mcThickness}}
+{\pgfpoint{\mcSize}{\mcSize}}
+{\pgfpoint{\mcSize}{\mcSize}}
+{
+\pgfsetcolor{\tikz@pattern@color}
+\pgfsetlinewidth{\mcThickness}
+\pgfpathmoveto{\pgfqpoint{0pt}{\mcSize}}
+\pgfpathlineto{\pgfpoint{\mcSize+\mcThickness}{-\mcThickness}}
+\pgfusepath{stroke}
+}}
+\makeatother
+
+% Pattern Info
+ 
+\tikzset{
+pattern size/.store in=\mcSize, 
+pattern size = 5pt,
+pattern thickness/.store in=\mcThickness, 
+pattern thickness = 0.3pt,
+pattern radius/.store in=\mcRadius, 
+pattern radius = 1pt}
+\makeatletter
+\pgfutil@ifundefined{pgf@pattern@name@_e9vm93gji}{
+\pgfdeclarepatternformonly[\mcThickness,\mcSize]{_e9vm93gji}
+{\pgfqpoint{-\mcThickness}{-\mcThickness}}
+{\pgfpoint{\mcSize}{\mcSize}}
+{\pgfpoint{\mcSize}{\mcSize}}
+{
+\pgfsetcolor{\tikz@pattern@color}
+\pgfsetlinewidth{\mcThickness}
+\pgfpathmoveto{\pgfpointorigin}
+\pgfpathlineto{\pgfpoint{0}{\mcSize}}
+\pgfusepath{stroke}
+}}
+\makeatother
+\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+
+\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+%uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
+
+%Shape: Rectangle [id:dp637455473892253] 
+\draw  [pattern=_04ajd8fkc,pattern size=6pt,pattern thickness=0.75pt,pattern radius=0pt, pattern color={rgb, 255:red, 245; green, 166; blue, 35}] (96.33,110.33) -- (208.33,110.33) -- (208.33,149.67) -- (96.33,149.67) -- cycle ;
+%Shape: Rectangle [id:dp06586434884481551] 
+\draw  [color={rgb, 255:red, 0; green, 0; blue, 0 }  ,draw opacity=1 ][pattern=_x6lyfh0ey,pattern size=6pt,pattern thickness=0.75pt,pattern radius=0pt, pattern color={rgb, 255:red, 208; green, 2; blue, 27}] (208.33,110.33) -- (278.33,110.33) -- (278.33,149.67) -- (208.33,149.67) -- cycle ;
+%Shape: Rectangle [id:dp27712049671195493] 
+\draw  [pattern=_e9vm93gji,pattern size=6pt,pattern thickness=0.75pt,pattern radius=0pt, pattern color={rgb, 255:red, 74; green, 144; blue, 226}] (278.33,110.33) -- (382.33,110.33) -- (382.33,149.67) -- (278.33,149.67) -- cycle ;
+%Straight Lines [id:da6871721096179962] 
+\draw    (159.67,72) -- (157.15,104.67) ;
+\draw [shift={(157,106.67)}, rotate = 274.4] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da9318490798518977] 
+\draw    (245.67,70.67) -- (245.04,104) ;
+\draw [shift={(245,106)}, rotate = 271.08] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da8677348167680938] 
+\draw    (337,70.67) -- (335.75,100.67) ;
+\draw [shift={(335.67,102.67)}, rotate = 272.39] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da946997040439277] 
+\draw    (96.33,172.67) -- (96.33,155.33) ;
+%Straight Lines [id:da4111242410426823] 
+\draw    (382.33,174) -- (382.33,156.67) ;
+
+% Text Node
+\draw (123.33,50.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {Spaghetti};
+% Text Node
+\draw (224.67,50.33) node [anchor=north west][inner sep=0.75pt]   [align=left] {Salad};
+% Text Node
+\draw (317.33,51) node [anchor=north west][inner sep=0.75pt]   [align=left] {Soup};
+% Text Node
+\draw (73.33,187) node [anchor=north west][inner sep=0.75pt]   [align=left] {0 mins};
+% Text Node
+\draw (359.33,187.67) node [anchor=north west][inner sep=0.75pt]   [align=left] {9 mins};
+
+
+\end{tikzpicture}
+
+
+}
+
+Now, despite the fact that we did finish in 9 minutes, how will this family feel? Whoever ordered the Spaghetti won't like it because it's been cooling for 5 minutes, whoever ordered the salad is going to think it's a bit soggy, as it's been soaking for 3, and whoever ordered the soup is going to think it's too hot, as it was just finished! This is the mealtime equivalent to having your music stop as you drag your music player window across the screen- just simply splitting the tasks and doing one after another ends up making both tasks a weird experience. Let's try again, this time with time-slicing.\newline\newline
+
+{
+\centering
+
+
+
+
+% Pattern Info
+ 
+\tikzset{
+pattern size/.store in=\mcSize, 
+pattern size = 5pt,
+pattern thickness/.store in=\mcThickness, 
+pattern thickness = 0.3pt,
+pattern radius/.store in=\mcRadius, 
+pattern radius = 1pt}
+\makeatletter
+\pgfutil@ifundefined{pgf@pattern@name@_8effkoa4c}{
+\pgfdeclarepatternformonly[\mcThickness,\mcSize]{_8effkoa4c}
+{\pgfqpoint{0pt}{0pt}}
+{\pgfpoint{\mcSize+\mcThickness}{\mcSize+\mcThickness}}
+{\pgfpoint{\mcSize}{\mcSize}}
+{
+\pgfsetcolor{\tikz@pattern@color}
+\pgfsetlinewidth{\mcThickness}
+\pgfpathmoveto{\pgfqpoint{0pt}{0pt}}
+\pgfpathlineto{\pgfpoint{\mcSize+\mcThickness}{\mcSize+\mcThickness}}
+\pgfusepath{stroke}
+}}
+\makeatother
+
+% Pattern Info
+ 
+\tikzset{
+pattern size/.store in=\mcSize, 
+pattern size = 5pt,
+pattern thickness/.store in=\mcThickness, 
+pattern thickness = 0.3pt,
+pattern radius/.store in=\mcRadius, 
+pattern radius = 1pt}
+\makeatletter
+\pgfutil@ifundefined{pgf@pattern@name@_le9wi3r4q}{
+\pgfdeclarepatternformonly[\mcThickness,\mcSize]{_le9wi3r4q}
+{\pgfqpoint{0pt}{-\mcThickness}}
+{\pgfpoint{\mcSize}{\mcSize}}
+{\pgfpoint{\mcSize}{\mcSize}}
+{
+\pgfsetcolor{\tikz@pattern@color}
+\pgfsetlinewidth{\mcThickness}
+\pgfpathmoveto{\pgfqpoint{0pt}{\mcSize}}
+\pgfpathlineto{\pgfpoint{\mcSize+\mcThickness}{-\mcThickness}}
+\pgfusepath{stroke}
+}}
+\makeatother
+
+% Pattern Info
+ 
+\tikzset{
+pattern size/.store in=\mcSize, 
+pattern size = 5pt,
+pattern thickness/.store in=\mcThickness, 
+pattern thickness = 0.3pt,
+pattern radius/.store in=\mcRadius, 
+pattern radius = 1pt}
+\makeatletter
+\pgfutil@ifundefined{pgf@pattern@name@_vtbxw2bo1}{
+\pgfdeclarepatternformonly[\mcThickness,\mcSize]{_vtbxw2bo1}
+{\pgfqpoint{-\mcThickness}{-\mcThickness}}
+{\pgfpoint{\mcSize}{\mcSize}}
+{\pgfpoint{\mcSize}{\mcSize}}
+{
+\pgfsetcolor{\tikz@pattern@color}
+\pgfsetlinewidth{\mcThickness}
+\pgfpathmoveto{\pgfpointorigin}
+\pgfpathlineto{\pgfpoint{0}{\mcSize}}
+\pgfusepath{stroke}
+}}
+\makeatother
+
+% Pattern Info
+ 
+\tikzset{
+pattern size/.store in=\mcSize, 
+pattern size = 5pt,
+pattern thickness/.store in=\mcThickness, 
+pattern thickness = 0.3pt,
+pattern radius/.store in=\mcRadius, 
+pattern radius = 1pt}
+\makeatletter
+\pgfutil@ifundefined{pgf@pattern@name@_796dxsl5e}{
+\pgfdeclarepatternformonly[\mcThickness,\mcSize]{_796dxsl5e}
+{\pgfqpoint{0pt}{0pt}}
+{\pgfpoint{\mcSize+\mcThickness}{\mcSize+\mcThickness}}
+{\pgfpoint{\mcSize}{\mcSize}}
+{
+\pgfsetcolor{\tikz@pattern@color}
+\pgfsetlinewidth{\mcThickness}
+\pgfpathmoveto{\pgfqpoint{0pt}{0pt}}
+\pgfpathlineto{\pgfpoint{\mcSize+\mcThickness}{\mcSize+\mcThickness}}
+\pgfusepath{stroke}
+}}
+\makeatother
+
+% Pattern Info
+ 
+\tikzset{
+pattern size/.store in=\mcSize, 
+pattern size = 5pt,
+pattern thickness/.store in=\mcThickness, 
+pattern thickness = 0.3pt,
+pattern radius/.store in=\mcRadius, 
+pattern radius = 1pt}
+\makeatletter
+\pgfutil@ifundefined{pgf@pattern@name@_xq1so8yu3}{
+\pgfdeclarepatternformonly[\mcThickness,\mcSize]{_xq1so8yu3}
+{\pgfqpoint{0pt}{-\mcThickness}}
+{\pgfpoint{\mcSize}{\mcSize}}
+{\pgfpoint{\mcSize}{\mcSize}}
+{
+\pgfsetcolor{\tikz@pattern@color}
+\pgfsetlinewidth{\mcThickness}
+\pgfpathmoveto{\pgfqpoint{0pt}{\mcSize}}
+\pgfpathlineto{\pgfpoint{\mcSize+\mcThickness}{-\mcThickness}}
+\pgfusepath{stroke}
+}}
+\makeatother
+
+% Pattern Info
+ 
+\tikzset{
+pattern size/.store in=\mcSize, 
+pattern size = 5pt,
+pattern thickness/.store in=\mcThickness, 
+pattern thickness = 0.3pt,
+pattern radius/.store in=\mcRadius, 
+pattern radius = 1pt}
+\makeatletter
+\pgfutil@ifundefined{pgf@pattern@name@_myqc9ofqq}{
+\pgfdeclarepatternformonly[\mcThickness,\mcSize]{_myqc9ofqq}
+{\pgfqpoint{-\mcThickness}{-\mcThickness}}
+{\pgfpoint{\mcSize}{\mcSize}}
+{\pgfpoint{\mcSize}{\mcSize}}
+{
+\pgfsetcolor{\tikz@pattern@color}
+\pgfsetlinewidth{\mcThickness}
+\pgfpathmoveto{\pgfpointorigin}
+\pgfpathlineto{\pgfpoint{0}{\mcSize}}
+\pgfusepath{stroke}
+}}
+\makeatother
+\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+
+\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+%uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
+
+%Shape: Rectangle [id:dp637455473892253] 
+\draw  [pattern=_8effkoa4c,pattern size=6pt,pattern thickness=0.75pt,pattern radius=0pt, pattern color={rgb, 255:red, 245; green, 166; blue, 35}] (95.13,70.87) -- (149.8,70.87) -- (149.8,110.2) -- (95.13,110.2) -- cycle ;
+%Shape: Rectangle [id:dp06586434884481551] 
+\draw  [color={rgb, 255:red, 0; green, 0; blue, 0 }  ,draw opacity=1 ][pattern=_le9wi3r4q,pattern size=6pt,pattern thickness=0.75pt,pattern radius=0pt, pattern color={rgb, 255:red, 208; green, 2; blue, 27}] (283.4,110.2) -- (321.13,110.2) -- (321.13,149.53) -- (283.4,149.53) -- cycle ;
+%Shape: Rectangle [id:dp27712049671195493] 
+\draw  [pattern=_vtbxw2bo1,pattern size=6pt,pattern thickness=0.75pt,pattern radius=0pt, pattern color={rgb, 255:red, 74; green, 144; blue, 226}] (181.53,149.53) -- (231.27,149.53) -- (231.27,188.87) -- (181.53,188.87) -- cycle ;
+%Straight Lines [id:da946997040439277] 
+\draw    (95.13,211.87) -- (95.13,194.53) ;
+%Straight Lines [id:da4111242410426823] 
+\draw    (382.33,211.6) -- (382.33,194.27) ;
+%Shape: Rectangle [id:dp7551289350159917] 
+\draw  [pattern=_796dxsl5e,pattern size=6pt,pattern thickness=0.75pt,pattern radius=0pt, pattern color={rgb, 255:red, 245; green, 166; blue, 35}] (231.27,70.87) -- (282.87,70.87) -- (282.87,110.2) -- (231.27,110.2) -- cycle ;
+%Shape: Rectangle [id:dp509165568319727] 
+\draw  [color={rgb, 255:red, 0; green, 0; blue, 0 }  ,draw opacity=1 ][pattern=_xq1so8yu3,pattern size=6pt,pattern thickness=0.75pt,pattern radius=0pt, pattern color={rgb, 255:red, 208; green, 2; blue, 27}] (150.2,110.2) -- (181.53,110.2) -- (181.53,149.53) -- (150.2,149.53) -- cycle ;
+%Shape: Rectangle [id:dp07516811217668684] 
+\draw  [pattern=_myqc9ofqq,pattern size=6pt,pattern thickness=0.75pt,pattern radius=0pt, pattern color={rgb, 255:red, 74; green, 144; blue, 226}] (321.53,149.53) -- (375.4,149.53) -- (375.4,188.87) -- (321.53,188.87) -- cycle ;
+%Straight Lines [id:da5341206271621973] 
+\draw [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,draw opacity=1 ]   (75,48) -- (114.27,81.11) ;
+\draw [shift={(115.8,82.4)}, rotate = 220.14] [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,draw opacity=1 ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da6681580330461115] 
+\draw [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,draw opacity=1 ]   (75,48) -- (243.04,82.4) ;
+\draw [shift={(245,82.8)}, rotate = 191.57] [color={rgb, 255:red, 245; green, 166; blue, 35 }  ,draw opacity=1 ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da821619596279752] 
+\draw [color={rgb, 255:red, 208; green, 2; blue, 27 }  ,draw opacity=1 ]   (182.73,28) -- (166.94,120.83) ;
+\draw [shift={(166.6,122.8)}, rotate = 279.65999999999997] [color={rgb, 255:red, 208; green, 2; blue, 27 }  ,draw opacity=1 ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da9096151285321349] 
+\draw [color={rgb, 255:red, 208; green, 2; blue, 27 }  ,draw opacity=1 ]   (194.6,28.33) -- (299.52,123.06) ;
+\draw [shift={(301,124.4)}, rotate = 222.07999999999998] [color={rgb, 255:red, 208; green, 2; blue, 27 }  ,draw opacity=1 ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da615142619412103] 
+\draw [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,draw opacity=1 ]   (232.47,230.8) -- (210.46,168.29) ;
+\draw [shift={(209.8,166.4)}, rotate = 430.61] [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,draw opacity=1 ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da874929815233198] 
+\draw [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,draw opacity=1 ]   (232.47,229.2) -- (334.81,178.49) ;
+\draw [shift={(336.6,177.6)}, rotate = 513.64] [color={rgb, 255:red, 74; green, 144; blue, 226 }  ,draw opacity=1 ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+%Straight Lines [id:da8841142957924004] 
+\draw    (96.33,193.2) -- (382.33,192.8) ;
+
+% Text Node
+\draw (72.13,226.2) node [anchor=north west][inner sep=0.75pt]   [align=left] {0 mins};
+% Text Node
+\draw (358.13,226.87) node [anchor=north west][inner sep=0.75pt]   [align=left] {9 mins};
+% Text Node
+\draw (38.8,22.6) node [anchor=north west][inner sep=0.75pt]   [align=left] {Spaghetti};
+% Text Node
+\draw (170.8,9) node [anchor=north west][inner sep=0.75pt]   [align=left] {Salad};
+% Text Node
+\draw (213.97,237.4) node [anchor=north west][inner sep=0.75pt]   [align=left] {Soup};
+
+
+\end{tikzpicture}\newline
+
+
+}
+
+Here's what this would look like if we made use of time-slicing. Notice how all the food still gets done by the end of 9 minutes, but each dish's preparation ended in a manner that seemed much more \textit{synchronous}. That is, they finished within relative closeness to each other, even though all of them ended up taking more time to individually finish. This all happened \textbf{despite} the fact that (check the diagram) only one cook was active in the kitchen at a given point in time. That's basically what we're getting at here. Even though we had one cooking station, we managed to finish all 3 meals within relative closeness of each other (each within just a few minutes of each other). Was this perfect? No, it wasn't. But it was better than just making all three sequentially.\newline
+
+Process control's multitasking and context switching is built off this same phenomenon. There's no true way we can make a single CPU work on more processes than one, so we end up allowing each process to use the CPU for a tiny amount of time, one after the other. In this case, that's like letting each cook work their magic for only a few minutes, then handing off the kitchen to the next cook. The resulting process is this: Although all your processes may take \textit{slightly} longer to run individually, your computer can give the illusion of parallel processing by using this neat scheduling trick. \textbf{TL;DR} - By sacrificing a little bit of time (which is done specifically so that it's almost always hardly noticeable for humans), we can give the illusion of synchronous processing by using context switching for process multitasking.
+
+\subsection{General Process Control Knowledge}
+
+Ok, so that'll be it for our restaurant analogy, only because it gets a little harder to start stringing it together from there. However, there's more that you haven't covered in previous classes regarding process control that's highly interesting, and here's I'm going to go over it.\newline
+
+Again, this is designed to help augment your studying, so I'm going to loosely go over material from the \textbf{Process Control Worksheets} to help you develop your knowledge and better understand those exercises. You'll be going over two this week (Week 11) and I'll link them here. You'll have an additional one for Week 12, and that'll be linked in the next section.
+
+\subsubsection{Process Control Worksheet Links}
+
+\begin{itemize}
+	\item \textbf{Process Control Wksht 1} - \texttt{\href{http://www.cs.umd.edu/class/spring2020/cmsc216/labs/ProcessWorksheetI.pdf}{http://www.cs.umd.edu/class/spring2020/cmsc216/labs/ProcessWorksheetI.pdf}}
+	\item \textbf{Process Control Wksht 2} - \texttt{\href{http://www.cs.umd.edu/class/spring2020/cmsc216/labs/ProcessWorksheetII.pdf}{http://www.cs.umd.edu/class/spring2020/cmsc216/labs/ProcessWorksheetII.pdf}}
+\end{itemize}
+
+\subsubsection{Process Control Ideas}
+
+This section is designed to help you get your bearings and develop the knowledge surrounding the correct answers for the Process Control worksheets I and II. They're not the outright answers, but they're roughly 70\% of the thinking you need to get there.
+
+\subsubsection{The Kernel}
+
+The kernel is not something we've talked about a lot, but it's a central computing concept- quite literally. It's the centerpiece of every operating system, and serves as the main bridge of interaction between the user and the system's lowest level parts. The user's permitted to do a wide variety of things, but when it comes to things like File I/O, accessing external hardware, system memory, drives, and other 'system level tasks', you essentially have to ask the kernel politely for permission, after which it'll let you perform these actions. In simple terms, think of it this way: the kernel is the bridge that your programs and other applications use in order to talk to the CPU, memory, and external devices. It's usually cordoned off into its own allocated space, protected from read/writes from all other programs. This is known as the \textit{kernel space}.
+
+\subsubsection{Thread v. Processes}
+
+This one is explained pretty well in lecture, so go ahead and watch the video if you haven't already. Here's a quick rundown from me. Processes are considered the heavier players in this comparison, and threads are, in fact, just segments of processes. Here's a key point that might come in handy on exams, though. Threads \textbf{share} memory space. Specifically, they share \textbf{address space}, \textbf{file descriptors}, and the \textbf{heap}, yet they \textbf{don't share the stack}. Processes, on the other hand, get a whole place to themselves- they don't share memory space with other processes. Threads are essentially found within processes. There's plenty more difference, but that's the main stuff. Again, I highly recommend you watch the lecture segment on this.
+
+\subsubsection{The \texttt{init} Process}
+
+The \texttt{init} process is the first process that kicks off when a computer starts, and is thus given a process ID (pid) of 1. As such, it's the parent of all other processes on your system.
+
+\subsubsection{Signals}
+
+Signals are basically how processes let each other know something has happened. For example, the kernel can send a \texttt{SIGSEGV} to a process letting it know that a segmentation fault has occurred. Basically, since processes are given their own space to work with, they can't talk to each other very easily. Signals are how their communication is handled.
+
+\subsubsection{Forking}
+
+Forking in the C world is how we create more processes. These processes are called child processes, and usually, forking hits a wall when a) there is no more space to allocate a new process, or b) there are no more available PIDs to be doled out for our new process.
+
+\subsubsection{Zombie Processes (Scary)}
+
+Upon finishing all that it's meant to do, a process becomes a zombie process. This is because although it's done all it's been programmed to do, it's still waiting faithfully for its parent to come and figure out how exactly it died. Once a process's parent executes \texttt{wait} or a variant of it, the zombie process is \textit{reaped}.\newline
+
+The problem arises when you write (for lack of a better word) irresponsible parent processes. If your parents never end up calling wait() an appropriate amount of times and reaping their dead children, you'll end up having zombie processes just sitting around on your system. This phenomenon is known as a \textit{resource leak}.\newline
+
+If all else fails, and your parent process simply cannot look after its own children- you're stuck. You'll have to wait till the parent process exits (hopefully gracefully, or the cycle repeats itself), and in that case, the \texttt{init} process will adopt those zombie children. The \texttt{init} process has a special ability to frequently check for (and clean up) zombie processes, so they'll be taken care of from there.\newline
+
+The moral of the story is to make sure of the following- when you're writing code that forks child processes, make sure you dispose of them properly after they terminate (especially if you're making many children in a loop, for example), or you'll have zombie processes! Formally, this issue is called a resource leak, and it's generally something you don't want.
+
+\section{Week 12}
+
+More process control this week- but let's focus on zombie processes, reaping children, waiting, and the \texttt{exec} system call.
+
+
 
 \section{Closing Thoughts}
 
