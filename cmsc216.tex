@@ -3323,7 +3323,11 @@ The kernel is not something we've talked about a lot, but it's a central computi
 
 \subsubsection{Thread v. Processes}
 
-This one is explained pretty well in lecture, so go ahead and watch the video if you haven't already. Here's a quick rundown from me. Processes are considered the heavier players in this comparison, and threads are, in fact, just segments of processes. Here's a key point that might come in handy on exams, though. Threads \textbf{share} memory space. Specifically, they share \textbf{address space}, \textbf{file descriptors}, and the \textbf{heap}, yet they \textbf{don't share the stack}. Processes, on the other hand, get a whole place to themselves- they don't share memory space with other processes. Threads are essentially found within processes. There's plenty more difference, but that's the main stuff. Again, I highly recommend you watch the lecture segment on this.
+This one is explained pretty well in lecture, so go ahead and watch the video if you haven't already. Here's a quick rundown from me. Processes are considered the heavier players in this comparison, and threads are, in fact, just segments of processes. Here's a key point that might come in handy on exams, though. Threads \textbf{share} memory space. Specifically, they share \textbf{address space}, \textbf{file descriptors}, and the \textbf{heap}, yet they \textbf{don't share the stack}. Processes, on the other hand, get a whole place to themselves- they don't share memory space with other processes. Threads are essentially found within processes. There's plenty more difference, but that's the main stuff. Again, I highly recommend you watch the lecture segment on this.\\
+
+This is also a fairly valid question when it comes to software architecture, and I think the following article does a pretty good job talking about the pros and cons of thread and processes, and how you should decide which to employ for your use-case.\\
+
+\texttt{\href{https://www.backblaze.com/blog/whats-the-diff-programs-processes-and-threads/}{https://www.backblaze.com/blog/whats-the-diff-programs-processes-and-threads/}}
 
 \subsubsection{The \texttt{init} Process}
 
@@ -3339,19 +3343,45 @@ Forking in the C world is how we create more processes. These processes are call
 
 \subsubsection{Zombie Processes (Scary)}
 
-Upon finishing all that it's meant to do, a process becomes a zombie process. This is because although it's done all it's been programmed to do, it's still waiting faithfully for its parent to come and figure out how exactly it died. Once a process's parent executes \texttt{wait} or a variant of it, the zombie process is \textit{reaped}.\newline
-
-The problem arises when you write (for lack of a better word) irresponsible parent processes. If your parents never end up calling wait() an appropriate amount of times and reaping their dead children, you'll end up having zombie processes just sitting around on your system. This phenomenon is known as a \textit{resource leak}.\newline
-
-If all else fails, and your parent process simply cannot look after its own children- you're stuck. You'll have to wait till the parent process exits (hopefully gracefully, or the cycle repeats itself), and in that case, the \texttt{init} process will adopt those zombie children. The \texttt{init} process has a special ability to frequently check for (and clean up) zombie processes, so they'll be taken care of from there.\newline
-
-The moral of the story is to make sure of the following- when you're writing code that forks child processes, make sure you dispose of them properly after they terminate (especially if you're making many children in a loop, for example), or you'll have zombie processes! Formally, this issue is called a resource leak, and it's generally something you don't want.
+When a process finishes what it's supposed to do, it enters a state where it is known as a 'zombie process' before it's reaped. I talk about how to reap a process below, but make sure that you don't leave these lying around when your program finishes. Creating zombie processes (especially variable amounts of them) results in what's called a \textit{resource leak}, which is not good practice.
 
 \section{Week 12}
 
-More process control this week- but let's focus on zombie processes, reaping children, waiting, and the \texttt{exec} system call.
+More process control this week- but let's focus on zombie processes, reaping children, waiting, and the \texttt{exec} system call. Below is the worksheet that we'll be following along with in discussion. Again, this section is not meant to provide answers for you, but rather guide you in the right direction.
 
+\subsection{General Process Control Knowledge (cont'd)}
 
+\subsubsection{Process Control Worksheet Link}
+
+\begin{itemize}
+	\item \textbf{Process Control Wksht 1} - \texttt{\href{http://www.cs.umd.edu/class/spring2020/cmsc216/labs/ProcessWorksheetIII.pdf}{http://www.cs.umd.edu/class/spring2020/cmsc216/labs/ProcessWorksheetIII.pdf}}
+\end{itemize}
+
+\subsubsection{Reaping Child Processes}
+
+Here's what you've got to remember when it comes to reaping children. This is essentially the true end of life for a child process- it's when even after it's finished executing, if some of its artifacts still remain in the system, those are all removed. \textbf{When a process is reaped by its parent, it's removed from the process table}. This is done via \texttt{wait()} or \texttt{waitpid()}.
+
+\subsubsection{\texttt{wait()} and \texttt{waitpid()}}
+
+\texttt{wait()} is how parent processes reap children. Basically, if you don't give it any parameters, it's just going to reap the first thing that it can reap- in this case, the first child process that terminates and enters the zombie state. Keep in mind that if we invoke \texttt{wait()} when there are no running child processes, then it will have no effect at all.\\
+
+I think of \texttt{waitpid()} as a more specific version of \texttt{wait()}. They're both designed to do similar things, but \texttt{waitpid()} allows for a lot more customization. If you ever wanted to rewrite a \texttt{wait()} command using \texttt{waitpid()}, you'd want to take a look at the manpage for \texttt{waitpid()} and adjust some parameters.
+
+\subsubsection{Signals and Processes}
+
+As we learned already, processes are fairly isolated on a machine. Even to swap between them, an entire context switch has to occur. You can imagine that it's not easy, then, to allow two processes to communicate. Enter signals. Signals are the key for processes to communicate with each other. For example, if a parent process wants to figure out if its child process terminated and resulted in a segmentation fault, it would use a function like \texttt{WTERMSIG()} to 'catch' any signals generated by said child process upon termination.
+
+\subsubsection{Checking \texttt{WEXITSTATUS(status)}}
+
+The \texttt{WEXITSTATUS} function in C is indispensable. We can use it to determine how a child process terminated- but \textbf{not in all cases}! Specifically, if a child process terminates abnormally, we need to do some extra work before we use \texttt{WEXITSTATUS}. (Check for segfault, etc.)
+
+\subsubsection{Using \texttt{exec*}- The Costume Change Analogy}
+
+I like to think of an \texttt{exec*} system call as a full 'costume change' for a process. Even though a process may be in the middle of something when \texttt{exec*} is called, it now needs to replace everything it has and assume its new role as specified by the parameters of \texttt{exec*}. Specifically, the \textbf{code, static data, stack, and heap are all replaced}. However, just like an actor or actress performing a costume change, the actor/actress remains the same! In other words, despite the changing of the static data, stack, and heap, the \textbf{process remains the same}.\\
+
+The \texttt{exec*} command can fail for a variety of reasons, but most of them are 'system' related. It could be issues that range from an I/O error that occurred when reading from your filesystem, to issues with your \texttt{PATH}, \texttt{argv} or \texttt{envp} values, to running into memory limits, to issues with a directory or file you specified.\\
+
+When it does fail, it returns -1. However, when it succeeds, \textbf{it doesn't return}. This might sound totally absurd to you at first, but think about \textit{what exec* actually does.} Since the entire process is replaced (big costume change), it simply can't return anything to the program that made the call, because that program doesn't exist any longer! It's been replaced by this shiny new program specified in \texttt{exec*}'s parameters.
 
 \section{Closing Thoughts}
 
