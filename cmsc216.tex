@@ -3354,7 +3354,7 @@ More process control this week- but let's focus on zombie processes, reaping chi
 \subsubsection{Process Control Worksheet Link}
 
 \begin{itemize}
-	\item \textbf{Process Control Wksht 1} - \texttt{\href{http://www.cs.umd.edu/class/spring2020/cmsc216/labs/ProcessWorksheetIII.pdf}{http://www.cs.umd.edu/class/spring2020/cmsc216/labs/ProcessWorksheetIII.pdf}}
+	\item \textbf{Process Control Wksht 3} - \texttt{\href{http://www.cs.umd.edu/class/spring2020/cmsc216/labs/ProcessWorksheetIII.pdf}{http://www.cs.umd.edu/class/spring2020/cmsc216/labs/ProcessWorksheetIII.pdf}}
 \end{itemize}
 
 \subsubsection{Reaping Child Processes}
@@ -3383,9 +3383,42 @@ The \texttt{exec*} command can fail for a variety of reasons, but most of them a
 
 When it does fail, it returns -1. However, when it succeeds, \textbf{it doesn't return}. This might sound totally absurd to you at first, but think about \textit{what exec* actually does.} Since the entire process is replaced (big costume change), it simply can't return anything to the program that made the call, because that program doesn't exist any longer! It's been replaced by this shiny new program specified in \texttt{exec*}'s parameters.
 
+\section{Week 13}
+
+For our final week of instruction, we've got a few more things about process control that you may find useful. Below is the worksheet that we'll be following for this week.
+
+
+\begin{itemize}
+	\item \textbf{Process Control Wksht 4} - \texttt{\href{http://www.cs.umd.edu/class/spring2020/cmsc216/labs/ProcessWorksheetIV.pdf}{http://www.cs.umd.edu/class/spring2020/cmsc216/labs/ProcessWorksheetIV.pdf}}
+\end{itemize}
+ 
+\subsection{UNIX vs. Standard I/O}
+
+The main difference between these two \textbf{totally valid} methods of conducting input and output is that Standard I/O generally features buffers, while Unix I/O does not.\\
+
+Usually, you don't want to mix the two of these.
+
+\subsection{File Descriptor Table}
+
+Every process has a \textbf{file descriptor table} that just keeps track of the files that are opened. In addition, the table keeps track of \texttt{stdin}, \texttt{stdout}, and \texttt{stderr} by default. These are opened to the file numbers 0, 1, and 2 by default.
+
+\subsection{Forking?}
+
+How does \texttt{fork()} play into all of this? Well, the \texttt{fork()} system call makes a new process with a copy of the stack, the heap, data, and text, along with the file descriptor table of the process that calls \texttt{fork()}.\\
+
+However, don't get this mixed up with \texttt{exec*}! When you call \texttt{exec*}, the stack, heap, data, and text are overwritten, but the file descriptor table is not overwritten.
+
+\subsection{Reference Count}
+
+So what's a reference count all about? Basically, open file descriptors have reference counts, which mean exactly what you think they'd mean- it's just the number of times that \textit{it} is being referenced by something else. When a file's reference count drops to zero, it is no longer being referenced by anything, so C gets rid of it. As you close file descriptors using \texttt{close()}, you'll decrease the reference count for files.\\
+
+\subsection{\texttt{dup2}}
+
+What \texttt{dup2} allows us to do is copy from one file descriptor to another file descriptor. This allows us to do neat tricks like change standard out into a pipe to another process. That way, we can fool UNIX into thinking that it's printing to standard out when it might actually be printing to another file, for example.
+
 \section{Closing Thoughts}
 
-This document will be updated frequently as we progress through CMSC216. Please send errors to \texttt{apraveen@cs.umd.edu}\newline
+This document is complete as of May 4, 2020. Please send errors to \texttt{apraveen@cs.umd.edu}\newline
 
 \textbf{New as of Mar. 2020: Due to the migration to online classes for the duration of the COVID-19 University Closure, this document will be updated more frequently for the convenience of students.}
 
